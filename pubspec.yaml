@@ -1,0 +1,68 @@
+name: flutter_paytorl
+description: A Flutter library for handling Payto Resource Locators (PRLs). Based on the URL API and provides additional functionality for managing PRLs.
+version: 0.1.0
+homepage: https://github.com/bchainhub/flutter_paytorl
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  # This section identifies this Flutter project as a plugin project.
+  # The 'pluginClass' specifies the class (in Java, Kotlin, Swift, Objective-C, etc.)
+  # which should be registered in the plugin registry.
+  plugin:
+    platforms:
+      android:
+        package: com.example.flutter_paytorl
+        pluginClass: FlutterPaytorlPlugin
+      ios:
+        pluginClass: FlutterPaytorlPlugin
+      linux:
+        pluginClass: FlutterPaytorlPlugin
+      macos:
+        pluginClass: FlutterPaytorlPlugin
+      windows:
+        pluginClass: FlutterPaytorlPluginCApi
+      web:
+        pluginClass: FlutterPaytorlWeb
+        fileName: flutter_paytorl_web.dart
+      wasm:
+        pluginClass: FlutterPaytorlWasm
+        fileName: flutter_paytorl_wasm.dart
+
+# Additional information about this package
+repository: https://github.com/bchainhub/flutter_paytorl
+issue_tracker: https://github.com/bchainhub/flutter_paytorl/issues
+documentation: https://github.com/bchainhub/flutter_paytorl/wiki
+
+# Keywords related to the package
+topics:
+  - payto
+  - payment
+  - url
+  - resource-locator
+  - finance
+
+# Funding links
+funding:
+  - https://github.com/sponsors/bchainhub
+  - https://blockindex.net/address/cb7147879011ea207df5b35a24ca6f0859dcfb145999
+
+# Platform support
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:

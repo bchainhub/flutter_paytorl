@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://pub.dev/packages/flutter_paytorl
+    about: Read the Flutter PaytoRL package documentation on pub.dev
+  - name: Example App
+    url: https://github.com/bchainhub/flutter_paytorl/tree/main/example
+    about: Check out the example Flutter application
+  - name: Discussions
+    url: https://github.com/bchainhub/flutter_paytorl/discussions
+    about: Ask questions and discuss with other Flutter PaytoRL users
