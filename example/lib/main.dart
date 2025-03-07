@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_paytorl/flutter_paytorl.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PaytoRL Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const PaytoDemo(),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'PaytoRL Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          useMaterial3: true,
+        ),
+        home: const PaytoDemo(),
+      );
 }
 
 class PaytoDemo extends StatefulWidget {
@@ -29,17 +25,17 @@ class PaytoDemo extends StatefulWidget {
 }
 
 class _PaytoDemoState extends State<PaytoDemo> {
-  late TextEditingController _urlController;
+  late final TextEditingController _urlController;
   Payto? _payto;
   String _result = '';
+
+  static const _defaultUrl =
+      'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur';
 
   @override
   void initState() {
     super.initState();
-    _urlController = TextEditingController(
-      text:
-          'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur',
-    );
+    _urlController = TextEditingController(text: _defaultUrl);
     _parsePayto();
   }
 
@@ -54,8 +50,8 @@ class _PaytoDemoState extends State<PaytoDemo> {
       try {
         _payto = Payto(_urlController.text);
         _updateResult();
-      } catch (e) {
-        _result = 'Error: ${e.toString()}';
+      } on PayToException catch (e) {
+        _result = 'Error: ${e.message}';
       }
     });
   }
@@ -76,8 +72,7 @@ Fiat: ${_payto!.fiat}
 
 JSON Output:
 -----------
-${_formatJson(_payto!.toJsonObject().toJson())}
-''';
+${_formatJson(_payto!.toJsonObject().toJson())}''';
     });
   }
 
@@ -89,8 +84,8 @@ ${_formatJson(_payto!.toJsonObject().toJson())}
         _payto!.value = 20.02;
         _urlController.text = _payto!.toString();
         _updateResult();
-      } catch (e) {
-        _result = 'Error updating amount: ${e.toString()}';
+      } on PayToException catch (e) {
+        _result = 'Error updating amount: ${e.message}';
       }
     });
   }
@@ -100,55 +95,31 @@ ${_formatJson(_payto!.toJsonObject().toJson())}
 
     setState(() {
       try {
-        _payto!.colorBackground = 'ff0000'; // Red background
-        _payto!.colorForeground = '000000'; // Black foreground
+        _payto!
+          ..colorBackground = 'ff0000'
+          ..colorForeground = '000000';
         _urlController.text = _payto!.toString();
         _updateResult();
-      } catch (e) {
-        _result = 'Error updating colors: ${e.toString()}';
+      } on PayToException catch (e) {
+        _result = 'Error updating colors: ${e.message}';
       }
     });
   }
 
-  void _showAchExample() {
+  void _showExample(String url) {
     setState(() {
       try {
-        _urlController.text = 'payto://ach/123456789/1234567';
+        _urlController.text = url;
         _parsePayto();
-      } catch (e) {
-        _result = 'Error showing ACH example: ${e.toString()}';
-      }
-    });
-  }
-
-  void _showUpiExample() {
-    setState(() {
-      try {
-        _urlController.text = 'payto://upi/user@example.com';
-        _parsePayto();
-      } catch (e) {
-        _result = 'Error showing UPI example: ${e.toString()}';
-      }
-    });
-  }
-
-  void _showGeoExample() {
-    setState(() {
-      try {
-        final geoPayto = Payto('payto://void/geo');
-        geoPayto.location = '51.5074,0.1278';
-        _urlController.text = geoPayto.toString();
-        _parsePayto();
-      } catch (e) {
-        _result = 'Error showing geo example: ${e.toString()}';
+      } on PayToException catch (e) {
+        _result = 'Error showing example: ${e.message}';
       }
     });
   }
 
   String _formatJson(Map<String, dynamic> json) {
     const indent = '  ';
-    final buffer = StringBuffer();
-    buffer.writeln('{');
+    final buffer = StringBuffer()..writeln('{');
 
     json.forEach((key, value) {
       if (value != null) {
@@ -156,8 +127,7 @@ ${_formatJson(_payto!.toJsonObject().toJson())}
       }
     });
 
-    buffer.write('}');
-    return buffer.toString();
+    return buffer..write('}').toString();
   }
 
   @override
@@ -168,7 +138,7 @@ ${_formatJson(_payto!.toJsonObject().toJson())}
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -198,15 +168,20 @@ ${_formatJson(_payto!.toJsonObject().toJson())}
                   child: const Text('Update Colors'),
                 ),
                 ElevatedButton(
-                  onPressed: _showAchExample,
+                  onPressed: () => _showExample('payto://ach/123456789/1234567'),
                   child: const Text('ACH Example'),
                 ),
                 ElevatedButton(
-                  onPressed: _showUpiExample,
+                  onPressed: () =>
+                      _showExample('payto://upi/user@example.com'),
                   child: const Text('UPI Example'),
                 ),
                 ElevatedButton(
-                  onPressed: _showGeoExample,
+                  onPressed: () {
+                    final geoPayto = Payto('payto://void/geo')
+                      ..location = '51.5074,0.1278';
+                    _showExample(geoPayto.toString());
+                  },
                   child: const Text('Geo Example'),
                 ),
               ],
