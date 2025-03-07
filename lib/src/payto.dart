@@ -258,7 +258,8 @@ class Payto {
     if (token != null) {
       amount = '$token:${value ?? prevValue ?? ''}';
     } else if (token == null) {
-      amount = value != null || prevValue != null ? ':${value ?? prevValue}' : null;
+      amount =
+          value != null || prevValue != null ? ':${value ?? prevValue}' : null;
     } else if (value != null) {
       amount = '${prevToken != null ? '$prevToken:' : ''}$value';
     }
@@ -277,8 +278,10 @@ class Payto {
   /// Sets payment deadline as Unix timestamp
   set deadline(int? value) {
     if (value != null) {
-      if (value < 0 || !RegexPatterns.unixTimestampRegex.hasMatch(value.toString())) {
-        throw PayToException('Invalid deadline format. Must be a positive integer (Unix timestamp).');
+      if (value < 0 ||
+          !RegexPatterns.unixTimestampRegex.hasMatch(value.toString())) {
+        throw PayToException(
+            'Invalid deadline format. Must be a positive integer (Unix timestamp).');
       }
       _uri = _uri.replace(
         queryParameters: {..._uri.queryParameters, 'dl': value.toString()},
@@ -295,9 +298,7 @@ class Payto {
     if (_uri.queryParameters.containsKey('donate')) {
       final donateValue = _uri.queryParameters['donate'];
       return donateValue != null
-          ? (donateValue == '1'
-              ? true
-              : (donateValue == '0' ? false : null))
+          ? (donateValue == '1' ? true : (donateValue == '0' ? false : null))
           : null;
     }
     return null;
@@ -532,7 +533,8 @@ class Payto {
     if (_uri.host == 'ach') {
       if (_uri.path.length > 2) {
         final routingNumberStr = _getHostpathParts(type: 'ach', position: 1);
-        return routingNumberStr != null && RegexPatterns.routingNumberRegex.hasMatch(routingNumberStr)
+        return routingNumberStr != null &&
+                RegexPatterns.routingNumberRegex.hasMatch(routingNumberStr)
             ? int.parse(routingNumberStr)
             : null;
       }
@@ -542,8 +544,10 @@ class Payto {
 
   /// Sets routing number for ACH payments
   set routingNumber(int? value) {
-    if (value != null && !RegexPatterns.routingNumberRegex.hasMatch(value.toString())) {
-      throw PayToException('Invalid routing number format. Must be exactly 9 digits.');
+    if (value != null &&
+        !RegexPatterns.routingNumberRegex.hasMatch(value.toString())) {
+      throw PayToException(
+          'Invalid routing number format. Must be exactly 9 digits.');
     }
     if (_uri.path.length > 2) {
       _setPathParts(value?.toString(), 1);
@@ -563,9 +567,7 @@ class Payto {
     if (_uri.queryParameters.containsKey('rtl')) {
       final rtlValue = _uri.queryParameters['rtl'];
       return rtlValue != null
-          ? (rtlValue == '1'
-              ? true
-              : (rtlValue == '0' ? false : null))
+          ? (rtlValue == '1' ? true : (rtlValue == '0' ? false : null))
           : null;
     }
     return null;
@@ -613,7 +615,8 @@ class Payto {
     }
 
     if (value.length != 3) {
-      throw PayToException('Split requires receiver, amount, and percentage flag');
+      throw PayToException(
+          'Split requires receiver, amount, and percentage flag');
     }
 
     final receiver = value[0] as String;
@@ -626,7 +629,10 @@ class Payto {
 
     final prefix = isPercentage ? 'p:' : '';
     _uri = _uri.replace(
-      queryParameters: {..._uri.queryParameters, 'split': '$prefix$amount@$receiver'},
+      queryParameters: {
+        ..._uri.queryParameters,
+        'split': '$prefix$amount@$receiver'
+      },
     );
   }
 
@@ -670,11 +676,17 @@ class Payto {
       final parts = currentAmount.split(':');
       if (parts.length > 1) {
         _uri = _uri.replace(
-          queryParameters: {..._uri.queryParameters, 'amount': '${parts[0]}:$value'},
+          queryParameters: {
+            ..._uri.queryParameters,
+            'amount': '${parts[0]}:$value'
+          },
         );
       } else {
         _uri = _uri.replace(
-          queryParameters: {..._uri.queryParameters, 'amount': value.toString()},
+          queryParameters: {
+            ..._uri.queryParameters,
+            'amount': value.toString()
+          },
         );
       }
     } else {

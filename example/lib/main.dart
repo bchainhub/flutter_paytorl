@@ -168,12 +168,12 @@ ${_formatJson(_payto!.toJsonObject().toJson())}''';
                   child: const Text('Update Colors'),
                 ),
                 ElevatedButton(
-                  onPressed: () => _showExample('payto://ach/123456789/1234567'),
+                  onPressed: () =>
+                      _showExample('payto://ach/123456789/1234567'),
                   child: const Text('ACH Example'),
                 ),
                 ElevatedButton(
-                  onPressed: () =>
-                      _showExample('payto://upi/user@example.com'),
+                  onPressed: () => _showExample('payto://upi/user@example.com'),
                   child: const Text('UPI Example'),
                 ),
                 ElevatedButton(
