@@ -50,7 +50,7 @@ class _PaytoDemoState extends State<PaytoDemo> {
       try {
         _payto = Payto(_urlController.text);
         _updateResult();
-      } on PayToException catch (e) {
+      } on PaytoException catch (e) {
         _result = 'Error: ${e.message}';
       }
     });
@@ -84,7 +84,7 @@ ${_formatJson(_payto!.toJsonObject().toJson())}''';
         _payto!.value = 20.02;
         _urlController.text = _payto!.toString();
         _updateResult();
-      } on PayToException catch (e) {
+      } on PaytoException catch (e) {
         _result = 'Error updating amount: ${e.message}';
       }
     });
@@ -100,7 +100,7 @@ ${_formatJson(_payto!.toJsonObject().toJson())}''';
           ..colorForeground = '000000';
         _urlController.text = _payto!.toString();
         _updateResult();
-      } on PayToException catch (e) {
+      } on PaytoException catch (e) {
         _result = 'Error updating colors: ${e.message}';
       }
     });
@@ -111,7 +111,7 @@ ${_formatJson(_payto!.toJsonObject().toJson())}''';
       try {
         _urlController.text = url;
         _parsePayto();
-      } on PayToException catch (e) {
+      } on PaytoException catch (e) {
         _result = 'Error showing example: ${e.message}';
       }
     });
@@ -127,7 +127,8 @@ ${_formatJson(_payto!.toJsonObject().toJson())}''';
       }
     });
 
-    return buffer..write('}').toString();
+    buffer.write('}');
+    return buffer.toString();
   }
 
   @override

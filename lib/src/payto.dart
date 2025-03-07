@@ -13,7 +13,7 @@ class Payto {
   Payto(String paytoString) {
     _uri = Uri.parse(paytoString);
     if (_uri.scheme != 'payto') {
-      throw PayToException('Invalid protocol, must be payto:');
+      throw PaytoException('Invalid protocol, must be payto:');
     }
   }
 
@@ -65,7 +65,7 @@ class Payto {
   set accountAlias(String? value) {
     if (value != null) {
       if (!RegexPatterns.emailRegex.hasMatch(value)) {
-        throw PayToException('Invalid email address format');
+        throw PaytoException('Invalid email address format');
       }
       _setPathParts(value.toLowerCase());
     } else {
@@ -88,13 +88,13 @@ class Payto {
   /// Sets account number for ACH payments
   set accountNumber(int? value) {
     if (_uri.host.isEmpty || _uri.host != 'ach') {
-      throw PayToException('Invalid hostname, must be ach');
+      throw PaytoException('Invalid hostname, must be ach');
     }
 
     if (value != null) {
       final accountStr = value.toString();
       if (!RegexPatterns.accountNumberRegex.hasMatch(accountStr)) {
-        throw PayToException('Invalid account number format');
+        throw PaytoException('Invalid account number format');
       }
     }
 
@@ -187,7 +187,7 @@ class Payto {
   /// Sets BIC/SWIFT code
   set bic(String? value) {
     if (value != null && !RegexPatterns.bicRegex.hasMatch(value)) {
-      throw PayToException('Invalid BIC format');
+      throw PaytoException('Invalid BIC format');
     }
     if (_uri.host == 'bic') {
       _setPathParts(value?.toUpperCase(), 1);
@@ -229,7 +229,7 @@ class Payto {
   /// Sets currency from [token, fiat, value] array
   set currency(List<String?> valueArray) {
     if (valueArray.length > 3) {
-      throw PayToException('Invalid currency array length');
+      throw PaytoException('Invalid currency array length');
     }
 
     final token = valueArray[0];
@@ -280,7 +280,7 @@ class Payto {
     if (value != null) {
       if (value < 0 ||
           !RegexPatterns.unixTimestampRegex.hasMatch(value.toString())) {
-        throw PayToException(
+        throw PaytoException(
             'Invalid deadline format. Must be a positive integer (Unix timestamp).');
       }
       _uri = _uri.replace(
@@ -365,7 +365,7 @@ class Payto {
   /// Sets IBAN in path
   set iban(String? value) {
     if (value != null && !RegexPatterns.ibanRegex.hasMatch(value)) {
-      throw PayToException('Invalid IBAN format');
+      throw PaytoException('Invalid IBAN format');
     }
     if (_uri.host == 'iban') {
       final parts = _uri.path.split('/');
@@ -430,17 +430,17 @@ class Payto {
 
     final voidType = this.void_;
     if (voidType == null) {
-      throw PayToException('Void type must be set before setting location');
+      throw PaytoException('Void type must be set before setting location');
     }
 
     if (voidType == 'geo') {
       if (!RegexPatterns.geoLocationRegex.hasMatch(value)) {
-        throw PayToException(
+        throw PaytoException(
             'Invalid geo location format. Must be "latitude,longitude" with valid coordinates.');
       }
     } else if (voidType == 'plus') {
       if (!RegexPatterns.plusCodeRegex.hasMatch(value)) {
-        throw PayToException('Invalid plus code format.');
+        throw PaytoException('Invalid plus code format.');
       }
     }
 
@@ -546,7 +546,7 @@ class Payto {
   set routingNumber(int? value) {
     if (value != null &&
         !RegexPatterns.routingNumberRegex.hasMatch(value.toString())) {
-      throw PayToException(
+      throw PaytoException(
           'Invalid routing number format. Must be exactly 9 digits.');
     }
     if (_uri.path.length > 2) {
@@ -615,7 +615,7 @@ class Payto {
     }
 
     if (value.length != 3) {
-      throw PayToException(
+      throw PaytoException(
           'Split requires receiver, amount, and percentage flag');
     }
 
@@ -624,7 +624,7 @@ class Payto {
     final isPercentage = value[2] as bool;
 
     if (receiver.isEmpty || amount.isEmpty) {
-      throw PayToException('Split requires both receiver and amount');
+      throw PaytoException('Split requires both receiver and amount');
     }
 
     final prefix = isPercentage ? 'p:' : '';
@@ -775,4 +775,36 @@ class Payto {
         value: value,
         void_: void_,
       );
+
+  /// Gets background color
+  String? get colorBackground => _uri.queryParameters['color-b'];
+
+  /// Sets background color
+  set colorBackground(String? value) {
+    if (value != null) {
+      _uri = _uri.replace(
+        queryParameters: {..._uri.queryParameters, 'color-b': value},
+      );
+    } else {
+      final newParams = Map<String, String>.from(_uri.queryParameters)
+        ..remove('color-b');
+      _uri = _uri.replace(queryParameters: newParams);
+    }
+  }
+
+  /// Gets foreground color
+  String? get colorForeground => _uri.queryParameters['color-f'];
+
+  /// Sets foreground color
+  set colorForeground(String? value) {
+    if (value != null) {
+      _uri = _uri.replace(
+        queryParameters: {..._uri.queryParameters, 'color-f': value},
+      );
+    } else {
+      final newParams = Map<String, String>.from(_uri.queryParameters)
+        ..remove('color-f');
+      _uri = _uri.replace(queryParameters: newParams);
+    }
+  }
 }

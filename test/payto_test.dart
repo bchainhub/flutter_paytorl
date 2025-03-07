@@ -18,7 +18,7 @@ void main() {
     test('should throw on invalid protocol', () {
       expect(
         () => Payto('http://example.com'),
-        throwsA(isA<PayToException>()),
+        throwsA(isA<PaytoException>()),
       );
     });
   });
@@ -67,7 +67,7 @@ void main() {
 
       expect(
         () => achPayto.routingNumber = 12345,
-        throwsA(isA<PayToException>()),
+        throwsA(isA<PaytoException>()),
       );
     });
   });
@@ -87,7 +87,7 @@ void main() {
       final upiPayto = Payto('payto://upi/address');
       expect(
         () => upiPayto.accountAlias = 'invalid-email',
-        throwsA(isA<PayToException>()),
+        throwsA(isA<PaytoException>()),
       );
     });
   });
@@ -113,7 +113,7 @@ void main() {
       final geoPayto = Payto('payto://void/geo');
       expect(
         () => geoPayto.location = 'invalid-coords',
-        throwsA(isA<PayToException>()),
+        throwsA(isA<PaytoException>()),
       );
     });
   });
@@ -128,7 +128,7 @@ void main() {
       final bankPayto = Payto('payto://bic/address');
       expect(
         () => bankPayto.bic = 'invalid-bic',
-        throwsA(isA<PayToException>()),
+        throwsA(isA<PaytoException>()),
       );
     });
 
