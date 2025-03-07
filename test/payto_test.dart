@@ -4,7 +4,8 @@ import 'package:flutter_paytorl/flutter_paytorl.dart';
 void main() {
   group('Payto URL Parsing', () {
     test('should parse basic payment URL', () {
-      final payto = Payto('payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur');
+      final payto = Payto(
+          'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur');
 
       expect(payto.address, 'cb7147879011ea207df5b35a24ca6f0859dcfb145999');
       expect(payto.amount, 'ctn:10.01');

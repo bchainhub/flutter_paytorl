@@ -37,7 +37,8 @@ class _PaytoDemoState extends State<PaytoDemo> {
   void initState() {
     super.initState();
     _urlController = TextEditingController(
-      text: 'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur',
+      text:
+          'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur',
     );
     _parsePayto();
   }
@@ -148,13 +149,13 @@ ${_formatJson(_payto!.toJsonObject().toJson())}
     const indent = '  ';
     final buffer = StringBuffer();
     buffer.writeln('{');
-    
+
     json.forEach((key, value) {
       if (value != null) {
         buffer.writeln('$indent$key: $value,');
       }
     });
-    
+
     buffer.write('}');
     return buffer.toString();
   }

@@ -45,7 +45,8 @@ class Payto {
         addressArray.removeAt(position);
       }
     }
-    final newPath = '/${addressArray.where((part) => part.isNotEmpty).join('/')}';
+    final newPath =
+        '/${addressArray.where((part) => part.isNotEmpty).join('/')}';
     _uri = _uri.replace(path: newPath);
   }
 
