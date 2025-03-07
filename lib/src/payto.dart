@@ -1,7 +1,8 @@
 import 'dart:core';
-import 'models/payto_json.dart';
+
 import 'constants/regex_patterns.dart';
 import 'exceptions/payto_exception.dart';
+import 'models/payto_json.dart';
 
 /// A class for handling Payto Resource Locators (PRLs)
 class Payto {
@@ -45,9 +46,8 @@ class Payto {
         addressArray.removeAt(position);
       }
     }
-    final newPath =
-        '/${addressArray.where((part) => part.isNotEmpty).join('/')}';
-    _uri = _uri.replace(path: newPath);
+    final newPath = addressArray.where((part) => part.isNotEmpty).join('/');
+    _uri = _uri.replace(path: '/$newPath');
   }
 
   /// Gets email alias for UPI/PIX payments
