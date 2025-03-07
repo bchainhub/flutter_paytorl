@@ -7,11 +7,10 @@ import 'models/payto_json.dart';
 /// A class for handling Payto Resource Locators (PRLs)
 class Payto {
   /// Internal Uri object
-  late final Uri _uri;
+  Uri _uri;
 
   /// Creates a new Payto instance from a payto URL string
-  Payto(String paytoString) {
-    _uri = Uri.parse(paytoString);
+  Payto(String paytoString) : _uri = Uri.parse(paytoString) {
     if (_uri.scheme != 'payto') {
       throw PaytoException('Invalid protocol, must be payto:');
     }
@@ -123,13 +122,21 @@ class Payto {
   /// Sets payment amount
   set amount(String? value) {
     if (value != null) {
-      _uri = _uri.replace(
+      _uri = Uri(
+        scheme: _uri.scheme,
+        host: _uri.host,
+        path: _uri.path,
         queryParameters: {..._uri.queryParameters, 'amount': value},
       );
     } else {
       final newParams = Map<String, String>.from(_uri.queryParameters)
         ..remove('amount');
-      _uri = _uri.replace(queryParameters: newParams);
+      _uri = Uri(
+        scheme: _uri.scheme,
+        host: _uri.host,
+        path: _uri.path,
+        queryParameters: newParams,
+      );
     }
   }
 

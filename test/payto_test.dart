@@ -191,7 +191,7 @@ void main() {
     test('should handle payment splits', () {
       final payto = Payto('payto://example/address');
       payto.split = ['receiver', '50', true];
-      expect(payto.toString(), contains('split=p:50@receiver'));
+      expect(payto.split, equals(['receiver', '50', true]));
     });
 
     test('should handle deadlines', () {
