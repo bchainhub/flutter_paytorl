@@ -5,7 +5,7 @@ homepage: https://github.com/bchainhub/flutter_paytorl
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
-  flutter: ">=3.16.0"
+  flutter: ">=3.29.1"
 
 dependencies:
   flutter:
