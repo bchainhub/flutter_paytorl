@@ -1,3 +1,10 @@
+# Changelog
+
+## 0.1.1
+
+- Updated pubspec.yaml
+- Upgraded dependencies
+
 ## 0.1.0
 
 Initial release of Flutter PaytoRL 🎉
