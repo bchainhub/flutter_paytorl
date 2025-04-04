@@ -285,8 +285,7 @@ class Payto {
   /// Sets payment deadline as Unix timestamp
   set deadline(int? value) {
     if (value != null) {
-      if (value < 0 ||
-          !RegexPatterns.numberRegex.hasMatch(value.toString())) {
+      if (value < 0 || !RegexPatterns.numberRegex.hasMatch(value.toString())) {
         throw PaytoException(
             'Invalid deadline format. Must be a positive integer (Unix timestamp).');
       }
