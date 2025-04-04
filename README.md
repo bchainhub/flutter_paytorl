@@ -103,7 +103,7 @@ Creates a new Payto instance from a payto URL string.
 | `colorBackground` | `String?` | Background color in 6-character hex format |
 | `colorForeground` | `String?` | Foreground color in 6-character hex format |
 | `currency` | `List<String?>?` | Currency codes array [asset, fiat] |
-| `deadline` | `int?` | Payment deadline (Unix timestamp) |
+| `deadline` | `int?` | Payment deadline (Unix timestamp or minutes from now) |
 | `donate` | `bool?` | Donation flag |
 | `fiat` | `String?` | Fiat currency code (case-insensitive) |
 | `iban` | `String?` | International Bank Account Number (case-insensitive) |

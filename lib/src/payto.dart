@@ -275,7 +275,7 @@ class Payto {
   /// Gets payment deadline as Unix timestamp
   int? get deadline {
     final dl = _uri.queryParameters['dl'];
-    if (dl != null && RegexPatterns.unixTimestampRegex.hasMatch(dl)) {
+    if (dl != null && RegexPatterns.numberRegex.hasMatch(dl)) {
       final timestamp = int.parse(dl);
       return timestamp >= 0 ? timestamp : null;
     }
@@ -286,7 +286,7 @@ class Payto {
   set deadline(int? value) {
     if (value != null) {
       if (value < 0 ||
-          !RegexPatterns.unixTimestampRegex.hasMatch(value.toString())) {
+          !RegexPatterns.numberRegex.hasMatch(value.toString())) {
         throw PaytoException(
             'Invalid deadline format. Must be a positive integer (Unix timestamp).');
       }
