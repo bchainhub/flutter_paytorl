@@ -35,5 +35,5 @@ class RegexPatterns {
   static final RegExp routingNumberRegex = RegExp(r'^(\d{9})$');
 
   /// Matches Unix timestamps (positive integers)
-  static final RegExp unixTimestampRegex = RegExp(r'^\d+$');
+  static final RegExp numberRegex = RegExp(r'^\d+$');
 }
