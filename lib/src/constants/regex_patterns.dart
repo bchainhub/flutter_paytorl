@@ -28,7 +28,7 @@ class RegexPatterns {
 
   /// Matches Plus Codes (Open Location Code)
   static final RegExp plusCodeRegex = RegExp(
-    r'^[23456789CFGHJMPQRVWX]{2,8}\+[23456789CFGHJMPQRVWX]{2,7}$',
+    r'^[23456789CFGHJMPQRVWX]{8}\+[23456789CFGHJMPQRVWX]{2,7}$',
   );
 
   /// Matches 9-digit routing numbers
