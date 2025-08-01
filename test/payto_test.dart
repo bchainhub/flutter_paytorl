@@ -291,7 +291,8 @@ void main() {
       expect(() => payto.language = 'eng', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'e', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'english', throwsA(isA<PaytoException>()));
-      expect(() => payto.language = 'en-us-extra', throwsA(isA<PaytoException>()));
+      expect(
+          () => payto.language = 'en-us-extra', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'en_us', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'EN-US', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'EN', throwsA(isA<PaytoException>()));
@@ -305,7 +306,8 @@ void main() {
     });
 
     test('should handle language in complex URL', () {
-      final payto = Payto('payto://xcb/address?amount=10&lang=es-mx&fiat=eur&message=test');
+      final payto = Payto(
+          'payto://xcb/address?amount=10&lang=es-mx&fiat=eur&message=test');
       expect(payto.language, 'es-mx');
       expect(payto.amount, '10');
       expect(payto.fiat, 'eur');

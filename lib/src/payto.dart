@@ -830,7 +830,8 @@ class Payto {
     if (value != null) {
       // Validate the language format (2-letter code or locale format)
       if (!_isValidLanguageCode(value)) {
-        throw PaytoException('Invalid language format. Must be a 2-letter language code (e.g., "en") or locale format (e.g., "en-us")');
+        throw PaytoException(
+            'Invalid language format. Must be a 2-letter language code (e.g., "en") or locale format (e.g., "en-us")');
       }
       final normalizedValue = value.toLowerCase();
       _uri = _uri.replace(
