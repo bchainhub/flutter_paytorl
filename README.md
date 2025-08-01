@@ -17,6 +17,7 @@
 - 🧪 **Tested**: Comprehensive test coverage
 - 🌲 **Tree Shaking**: Zero dependencies, no side effects
 - 📱 **Cross Platform**: Supports Android, iOS, Web, macOS, Windows, Linux, and Wasm
+- 🌍 **Internationalization**: Built-in language/locale support
 
 ## Installation
 
@@ -24,7 +25,7 @@ Add `flutter_paytorl` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_paytorl: ^0.1.0
+  flutter_paytorl: ^0.1.4
 ```
 
 Or install via command line:
@@ -62,6 +63,15 @@ void main() {
   payto.colorForeground = '000000';  // Black foreground
   print(payto.colorBackground); // 'ff0000'
 
+  // Language/locale support
+  payto.language = 'en-us';  // Set language to US English
+  print(payto.language);     // 'en-us'
+
+  // Parse existing language parameter
+  final localizedPayto = Payto('payto://example/address?lang=es-mx&amount=50');
+  print(localizedPayto.language); // 'es-mx'
+  print(localizedPayto.amount);   // '50'
+
   // ACH payment examples
   final achPayto1 = Payto('payto://ach/123456789/1234567'); // With routing number
   print(achPayto1.routingNumber); // 123456789
@@ -78,6 +88,45 @@ void main() {
   print(geoPayto.location); // '51.5074,0.1278'
 }
 ```
+
+### Language/Locale Support
+
+The library supports language and locale specification through the `lang` query parameter:
+
+```dart
+// Two-letter language codes
+payto.language = 'en';  // English
+payto.language = 'es';  // Spanish
+payto.language = 'fr';  // French
+
+// Locale format (language-region)
+payto.language = 'en-us';  // US English
+payto.language = 'en-gb';  // British English
+payto.language = 'es-mx';  // Mexican Spanish
+payto.language = 'fr-ca';  // Canadian French
+
+// Mixed case is automatically normalized
+payto.language = 'En-Us';  // Normalized to 'en-us'
+payto.language = 'ES-MX';  // Normalized to 'es-mx'
+
+// Parse from URL
+final payto = Payto('payto://example/address?lang=de-de&amount=100');
+print(payto.language); // 'de-de'
+```
+
+**Valid formats:**
+
+- ✅ `en` (two-letter language code)
+- ✅ `en-us` (locale format, lowercase)
+- ✅ `en-US` (locale format, mixed case)
+- ✅ `en-Us` (locale format, mixed case)
+
+**Invalid formats:**
+
+- ❌ `EN-US` (all uppercase)
+- ❌ `eng` (three letters)
+- ❌ `en-us-extra` (invalid format)
+- ❌ `en_us` (wrong separator)
 
 ## API Reference
 
@@ -107,6 +156,7 @@ Creates a new Payto instance from a payto URL string.
 | `donate` | `bool?` | Donation flag |
 | `fiat` | `String?` | Fiat currency code (case-insensitive) |
 | `iban` | `String?` | International Bank Account Number (case-insensitive) |
+| `language` | `String?` | Language/locale code (2-letter or locale format) |
 | `location` | `String?` | Location data (format depends on void type) |
 | `message` | `String?` | Payment message |
 | `network` | `String?` | Network identifier (case-insensitive) |

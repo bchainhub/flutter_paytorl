@@ -763,6 +763,7 @@ class Payto {
         href: href,
         iban: iban,
         item: item,
+        language: language,
         location: location,
         message: message,
         network: network,
@@ -812,5 +813,48 @@ class Payto {
         ..remove('color-f');
       _uri = _uri.replace(queryParameters: newParams);
     }
+  }
+
+  /// Gets language/locale code
+  String? get language {
+    final langValue = _uri.queryParameters['lang'];
+    if (langValue != null) {
+      // Convert to lowercase for consistency
+      return langValue.toLowerCase();
+    }
+    return null;
+  }
+
+  /// Sets language/locale code
+  set language(String? value) {
+    if (value != null) {
+      // Validate the language format (2-letter code or locale format)
+      if (!_isValidLanguageCode(value)) {
+        throw PaytoException('Invalid language format. Must be a 2-letter language code (e.g., "en") or locale format (e.g., "en-us")');
+      }
+      final normalizedValue = value.toLowerCase();
+      _uri = _uri.replace(
+        queryParameters: {..._uri.queryParameters, 'lang': normalizedValue},
+      );
+    } else {
+      final newParams = Map<String, String>.from(_uri.queryParameters)
+        ..remove('lang');
+      _uri = _uri.replace(queryParameters: newParams);
+    }
+  }
+
+  /// Helper method to validate language codes
+  bool _isValidLanguageCode(String code) {
+    // Check for 2-letter language code (e.g., "en", "es", "fr")
+    if (code.length == 2 && RegExp(r'^[a-z]{2}$').hasMatch(code)) {
+      return true;
+    }
+
+    // Check for locale format (e.g., "en-us", "es-mx", "fr-ca", "en-US", "en-Us")
+    if (RegExp(r'^[a-z]{2}-[a-zA-Z]{2}$').hasMatch(code)) {
+      return true;
+    }
+
+    return false;
   }
 }
