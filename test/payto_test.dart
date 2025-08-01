@@ -201,4 +201,127 @@ void main() {
       expect(payto.deadline, timestamp);
     });
   });
+
+  group('Language/Locale Handling', () {
+    test('should handle two-letter language codes', () {
+      final payto = Payto('payto://example/address?lang=en');
+      expect(payto.language, 'en');
+    });
+
+    test('should handle locale format', () {
+      final payto = Payto('payto://example/address?lang=en-us');
+      expect(payto.language, 'en-us');
+    });
+
+    test('should normalize uppercase language codes', () {
+      final payto = Payto('payto://example/address?lang=EN');
+      expect(payto.language, 'en');
+    });
+
+    test('should normalize mixed case locale', () {
+      final payto = Payto('payto://example/address?lang=En-Us');
+      expect(payto.language, 'en-us');
+    });
+
+    test('should handle multiple query parameters with language', () {
+      final payto = Payto('payto://example/address?amount=10&lang=es&fiat=eur');
+      expect(payto.language, 'es');
+      expect(payto.amount, '10');
+      expect(payto.fiat, 'eur');
+    });
+
+    test('should set language code', () {
+      final payto = Payto('payto://example/address');
+      payto.language = 'fr';
+      expect(payto.language, 'fr');
+      expect(payto.toString(), contains('lang=fr'));
+    });
+
+    test('should set locale format', () {
+      final payto = Payto('payto://example/address');
+      payto.language = 'es-mx';
+      expect(payto.language, 'es-mx');
+      expect(payto.toString(), contains('lang=es-mx'));
+    });
+
+    test('should normalize mixed case input', () {
+      final payto = Payto('payto://example/address');
+      payto.language = 'de-De';
+      expect(payto.language, 'de-de');
+      expect(payto.toString(), contains('lang=de-de'));
+    });
+
+    test('should remove language when set to null', () {
+      final payto = Payto('payto://example/address?lang=en');
+      expect(payto.language, 'en');
+
+      payto.language = null;
+      expect(payto.language, null);
+      expect(payto.toString(), isNot(contains('lang=')));
+    });
+
+    test('should validate two-letter language codes', () {
+      final payto = Payto('payto://example/address');
+
+      // Valid codes
+      expect(() => payto.language = 'en', returnsNormally);
+      expect(() => payto.language = 'es', returnsNormally);
+      expect(() => payto.language = 'fr', returnsNormally);
+      expect(() => payto.language = 'de', returnsNormally);
+    });
+
+    test('should validate locale format', () {
+      final payto = Payto('payto://example/address');
+
+      // Valid locales
+      expect(() => payto.language = 'en-us', returnsNormally);
+      expect(() => payto.language = 'es-mx', returnsNormally);
+      expect(() => payto.language = 'fr-ca', returnsNormally);
+      expect(() => payto.language = 'de-de', returnsNormally);
+      expect(() => payto.language = 'en-US', returnsNormally);
+      expect(() => payto.language = 'es-MX', returnsNormally);
+      expect(() => payto.language = 'en-Us', returnsNormally);
+      expect(() => payto.language = 'es-Mx', returnsNormally);
+    });
+
+    test('should reject invalid language codes', () {
+      final payto = Payto('payto://example/address');
+
+      // Invalid codes
+      expect(() => payto.language = 'eng', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'e', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'english', throwsA(isA<PaytoException>()));
+      expect(
+          () => payto.language = 'en-us-extra', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'en_us', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'EN-US', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'EN', throwsA(isA<PaytoException>()));
+    });
+
+    test('should include language in JSON object', () {
+      final payto = Payto('payto://example/address?lang=fr');
+      final json = payto.toJsonObject();
+
+      expect(json.language, 'fr');
+    });
+
+    test('should handle language in complex URL', () {
+      final payto = Payto(
+          'payto://xcb/address?amount=10&lang=es-mx&fiat=eur&message=test');
+      expect(payto.language, 'es-mx');
+      expect(payto.amount, '10');
+      expect(payto.fiat, 'eur');
+      expect(payto.message, 'test');
+    });
+
+    test('should preserve language when modifying other properties', () {
+      final payto = Payto('payto://example/address?lang=de');
+      payto.amount = '20';
+      payto.message = 'updated';
+
+      expect(payto.language, 'de');
+      expect(payto.amount, '20');
+      expect(payto.message, 'updated');
+    });
+  });
 }

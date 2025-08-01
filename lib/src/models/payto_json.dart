@@ -57,6 +57,9 @@ class PaytoJson {
   /// Item description (max 40 chars)
   final String? item;
 
+  /// Language/locale code (2-letter or locale format)
+  final String? language;
+
   /// Location data (format depends on void type)
   final String? location;
 
@@ -129,6 +132,7 @@ class PaytoJson {
     required this.href,
     required this.iban,
     required this.item,
+    required this.language,
     required this.location,
     required this.message,
     required this.network,
@@ -169,6 +173,7 @@ class PaytoJson {
         href: json['href'] as String? ?? '',
         iban: json['iban'] as String?,
         item: json['item'] as String?,
+        language: json['language'] as String?,
         location: json['location'] as String?,
         message: json['message'] as String?,
         network: json['network'] as String? ?? '',
@@ -209,6 +214,7 @@ class PaytoJson {
         if (href.isNotEmpty) 'href': href,
         if (iban != null) 'iban': iban,
         if (item != null) 'item': item,
+        if (language != null) 'language': language,
         if (location != null) 'location': location,
         if (message != null) 'message': message,
         if (network.isNotEmpty) 'network': network,
