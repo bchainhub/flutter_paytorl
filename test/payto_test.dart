@@ -116,6 +116,14 @@ void main() {
         throwsA(isA<PaytoException>()),
       );
     });
+
+    test('should handle coordinates with 9 decimal places', () {
+      final geoPayto = Payto('payto://void/geo');
+      geoPayto.location = '51.507400000,0.127800000';
+
+      expect(geoPayto.void_, 'geo');
+      expect(geoPayto.location, '51.507400000,0.127800000');
+    });
   });
 
   group('Bank Details', () {
@@ -199,6 +207,39 @@ void main() {
       final payto = Payto('payto://example/address');
       payto.deadline = timestamp;
       expect(payto.deadline, timestamp);
+    });
+
+    test('should handle mode parameter', () {
+      final payto = Payto('payto://example/address?mode=qr');
+      expect(payto.mode, 'qr');
+    });
+
+    test('should set mode parameter', () {
+      final payto = Payto('payto://example/address');
+      payto.mode = 'nfc';
+      expect(payto.mode, 'nfc');
+      expect(payto.toString(), contains('mode=nfc'));
+    });
+
+    test('should normalize mode to lowercase', () {
+      final payto = Payto('payto://example/address?mode=QR');
+      expect(payto.mode, 'qr');
+    });
+
+    test('should remove mode when set to null', () {
+      final payto = Payto('payto://example/address?mode=qr');
+      expect(payto.mode, 'qr');
+
+      payto.mode = null;
+      expect(payto.mode, null);
+      expect(payto.toString(), isNot(contains('mode=')));
+    });
+
+    test('should include mode in JSON object', () {
+      final payto = Payto('payto://example/address?mode=qr');
+      final json = payto.toJsonObject();
+
+      expect(json.mode, 'qr');
     });
   });
 

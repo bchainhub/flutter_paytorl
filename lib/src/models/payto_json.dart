@@ -66,6 +66,9 @@ class PaytoJson {
   /// Payment message
   final String? message;
 
+  /// Preferred mode of Pass
+  final String? mode;
+
   /// Network identifier (case-insensitive)
   final String network;
 
@@ -135,6 +138,7 @@ class PaytoJson {
     required this.language,
     required this.location,
     required this.message,
+    required this.mode,
     required this.network,
     required this.organization,
     required this.origin,
@@ -176,6 +180,7 @@ class PaytoJson {
         language: json['language'] as String?,
         location: json['location'] as String?,
         message: json['message'] as String?,
+        mode: json['mode'] as String?,
         network: json['network'] as String? ?? '',
         organization: json['organization'] as String?,
         origin: json['origin'] as String? ?? '',
@@ -217,6 +222,7 @@ class PaytoJson {
         if (language != null) 'language': language,
         if (location != null) 'location': location,
         if (message != null) 'message': message,
+        if (mode != null) 'mode': mode,
         if (network.isNotEmpty) 'network': network,
         if (organization != null) 'organization': organization,
         if (origin.isNotEmpty) 'origin': origin,

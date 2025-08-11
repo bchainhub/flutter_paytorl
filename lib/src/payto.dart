@@ -725,6 +725,28 @@ class Payto {
     }
   }
 
+  /// Gets preferred mode of Pass
+  String? get mode {
+    final modeValue = _uri.queryParameters['mode'];
+    if (modeValue != null) {
+      return modeValue.toLowerCase();
+    }
+    return null;
+  }
+
+  /// Sets preferred mode of Pass
+  set mode(String? value) {
+    if (value != null) {
+      _uri = _uri.replace(
+        queryParameters: {..._uri.queryParameters, 'mode': value},
+      );
+    } else {
+      final newParams = Map<String, String>.from(_uri.queryParameters)
+        ..remove('mode');
+      _uri = _uri.replace(queryParameters: newParams);
+    }
+  }
+
   /// Helper method to check if a string is numeric
   bool isNumeric(String str) {
     try {
@@ -766,6 +788,7 @@ class Payto {
         language: language,
         location: location,
         message: message,
+        mode: mode,
         network: network,
         organization: organization,
         origin: origin,
