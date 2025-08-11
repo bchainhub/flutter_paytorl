@@ -1,6 +1,6 @@
 name: flutter_paytorl
 description: A Flutter library for handling Payto Resource Locators (PRLs). Based on the URL API and provides additional functionality for managing PRLs.
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/bchainhub/flutter_paytorl
 repository: https://github.com/bchainhub/flutter_paytorl
 documentation: https://github.com/bchainhub/flutter_paytorl#readme

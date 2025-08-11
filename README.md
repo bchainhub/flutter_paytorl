@@ -83,11 +83,64 @@ void main() {
 
   // Geo location example
   final geoPayto = Payto('payto://void/geo');
-  geoPayto.location = '51.5074,0.1278';  // Valid coordinates
+  geoPayto.location = '51.507400000,0.127800000';  // High-precision coordinates (9 decimal places)
   print(geoPayto.void_);     // 'geo'
-  print(geoPayto.location); // '51.5074,0.1278'
+  print(geoPayto.location); // '51.507400000,0.127800000'
+
+  // Mode specification
+  payto.mode = 'qr';  // Set payment mode to QR code
+  print(payto.mode);  // 'qr'
 }
 ```
+
+## API Reference
+
+### Constructor
+
+```dart
+Payto(String paytoString)
+```
+
+Creates a new Payto instance from a payto URL string.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `accountAlias` | `String?` | Email address for UPI/PIX payments (case-insensitive) |
+| `accountNumber` | `int?` | Account number (7-14 digits) for ACH payments |
+| `address` | `String?` | Payment address |
+| `amount` | `String?` | Payment amount with optional currency prefix |
+| `asset` | `String?` | Asset type or contract address |
+| `barcode` | `String?` | Barcode format |
+| `bic` | `String?` | Bank Identifier Code (8 or 11 characters, case-insensitive) |
+| `colorBackground` | `String?` | Background color in 6-character hex format |
+| `colorForeground` | `String?` | Foreground color in 6-character hex format |
+| `currency` | `List<String?>?` | Currency codes array [asset, fiat] |
+| `deadline` | `int?` | Payment deadline (Unix timestamp) |
+| `donate` | `bool?` | Donation flag |
+| `fiat` | `String?` | Fiat currency code (case-insensitive) |
+| `iban` | `String?` | International Bank Account Number (case-insensitive) |
+| `language` | `String?` | Language/locale code (2-letter or locale format) |
+| `location` | `String?` | Location data (format depends on void type) |
+| `message` | `String?` | Payment message |
+| `mode` | `String?` | Preferred payment mode (e.g., 'qr', 'nfc', 'card') |
+| `network` | `String?` | Network identifier (case-insensitive) |
+| `routingNumber` | `int?` | Bank routing number (9 digits) |
+| `value` | `double?` | Numeric amount value |
+| `void_` | `String?` | Void path type (e.g., 'geo', 'plus') |
+
+### Methods
+
+| Method | Return Type | Description |
+|--------|-------------|-------------|
+| `toString()` | `String` | Returns the complete payto URL string |
+| `toJson()` | `String` | Returns a JSON string representation |
+| `toJsonObject()` | `PaytoJson` | Returns a typed object with all properties |
+
+## Setup
+
+You can set the features by setting values for example for the following functionalities.
 
 ### Language/Locale Support
 
@@ -128,49 +181,52 @@ print(payto.language); // 'de-de'
 - ❌ `en-us-extra` (invalid format)
 - ❌ `en_us` (wrong separator)
 
-## API Reference
+### Mode Support
 
-### Constructor
+The library supports payment mode specification through the `mode` query parameter:
 
 ```dart
-Payto(String paytoString)
+// Set payment mode
+payto.mode = 'qr';      // QR code payment
+payto.mode = 'nfc';     // NFC payment
+
+// Parse existing mode parameter
+final payto = Payto('payto://example/address?mode=qr&amount=100');
+print(payto.mode); // 'qr'
+
+// Mode is automatically normalized to lowercase
+payto.mode = 'NFC';
+print(payto.mode); // 'nfc'
+
+// Remove mode
+payto.mode = null;
 ```
 
-Creates a new Payto instance from a payto URL string.
+The parameter will only affect the display of the payment pass and only if that is supported by the payment provider.
 
-### Properties
+### Geographic Coordinates
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `accountAlias` | `String?` | Email address for UPI/PIX payments (case-insensitive) |
-| `accountNumber` | `int?` | Account number (7-14 digits) for ACH payments |
-| `address` | `String?` | Payment address |
-| `amount` | `String?` | Payment amount with optional currency prefix |
-| `asset` | `String?` | Asset type or contract address |
-| `barcode` | `String?` | Barcode format |
-| `bic` | `String?` | Bank Identifier Code (8 or 11 characters, case-insensitive) |
-| `colorBackground` | `String?` | Background color in 6-character hex format |
-| `colorForeground` | `String?` | Foreground color in 6-character hex format |
-| `currency` | `List<String?>?` | Currency codes array [asset, fiat] |
-| `deadline` | `int?` | Payment deadline (Unix timestamp or minutes from now) |
-| `donate` | `bool?` | Donation flag |
-| `fiat` | `String?` | Fiat currency code (case-insensitive) |
-| `iban` | `String?` | International Bank Account Number (case-insensitive) |
-| `language` | `String?` | Language/locale code (2-letter or locale format) |
-| `location` | `String?` | Location data (format depends on void type) |
-| `message` | `String?` | Payment message |
-| `network` | `String?` | Network identifier (case-insensitive) |
-| `routingNumber` | `int?` | Bank routing number (9 digits) |
-| `value` | `double?` | Numeric amount value |
-| `void_` | `String?` | Void path type (e.g., 'geo', 'plus') |
+The library supports high-precision geographic coordinates with up to 9 decimal places:
 
-### Methods
+```dart
+// High-precision coordinates (sub-millimeter accuracy)
+final geoPayto = Payto('payto://void/geo');
+geoPayto.location = '51.507400000,0.127800000';  // 9 decimal places
 
-| Method | Return Type | Description |
-|--------|-------------|-------------|
-| `toString()` | `String` | Returns the complete payto URL string |
-| `toJson()` | `String` | Returns a JSON string representation |
-| `toJsonObject()` | `PaytoJson` | Returns a typed object with all properties |
+// Standard precision coordinates
+geoPayto.location = '51.5074,0.1278';            // 4 decimal places
+
+// Parse existing coordinates
+final payto = Payto('payto://void/geo?loc=40.7128,-74.0060');
+print(payto.location); // '40.7128,-74.0060'
+```
+
+**Coordinate formats supported:**
+
+- ✅ **Latitude**: `-90.000000000` to `+90.000000000` (9 decimal places)
+- ✅ **Longitude**: `-180.000000000` to `+180.000000000` (9 decimal places)
+- ✅ **Optional signs**: `+` or `-` prefix
+- ✅ **Mixed precision**: Any number of decimal places from 1 to 9
 
 ## Platform Support
 
