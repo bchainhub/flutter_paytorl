@@ -77,6 +77,13 @@ void main() {
   print(achPayto1.routingNumber); // 123456789
   print(achPayto1.accountNumber); // 1234567
 
+  // INTRA payment examples (European inter-bank transfers)
+  final intraPayto = Payto('payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20');
+  print(intraPayto.bic); // 'PINGCHB2'
+  print(intraPayto.accountNumber); // 'cb1958b39698a44bdae37f881e68dce073823a48a631'
+  print(intraPayto.amount); // 'usd:20'
+  print(intraPayto.value); // 20
+
   // UPI/PIX payment examples (case-insensitive email)
   final upiPayto = Payto('payto://upi/USER@example.com');
   print(upiPayto.accountAlias); // 'user@example.com'
@@ -108,7 +115,7 @@ Creates a new Payto instance from a payto URL string.
 | Property | Type | Description |
 |----------|------|-------------|
 | `accountAlias` | `String?` | Email address for UPI/PIX payments (case-insensitive) |
-| `accountNumber` | `int?` | Account number (7-14 digits) for ACH payments |
+| `accountNumber` | `dynamic` | Account number for ACH payments (int) or INTRA payments (String) |
 | `address` | `String?` | Payment address |
 | `amount` | `String?` | Payment amount with optional currency prefix |
 | `asset` | `String?` | Asset type or contract address |

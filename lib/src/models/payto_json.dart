@@ -3,8 +3,8 @@ class PaytoJson {
   /// Email address for UPI/PIX payments (case-insensitive)
   final String? accountAlias;
 
-  /// Account number (7-14 digits) for ACH payments
-  final int? accountNumber;
+  /// Account number for ACH payments (int) or INTRA payments (String)
+  final dynamic accountNumber;
 
   /// Payment address
   final String? address;
@@ -159,7 +159,7 @@ class PaytoJson {
   /// Creates a PaytoJson instance from a JSON map
   factory PaytoJson.fromJson(Map<String, dynamic> json) => PaytoJson(
         accountAlias: json['accountAlias'] as String?,
-        accountNumber: json['accountNumber'] as int?,
+        accountNumber: json['accountNumber'],
         address: json['address'] as String?,
         amount: json['amount'] as String?,
         asset: json['asset'] as String?,
