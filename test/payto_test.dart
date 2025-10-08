@@ -72,6 +72,94 @@ void main() {
     });
   });
 
+  group('INTRA Payments', () {
+    test('should parse INTRA payment with BIC and account', () {
+      final intraPayto = Payto(
+          'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631');
+
+      expect(intraPayto.bic, 'PINGCHB2');
+      expect(intraPayto.accountNumber,
+          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+    });
+
+    test('should parse INTRA payment with amount', () {
+      final intraPayto = Payto(
+          'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20');
+
+      expect(intraPayto.bic, 'PINGCHB2');
+      expect(intraPayto.accountNumber,
+          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(intraPayto.amount, 'usd:20');
+      expect(intraPayto.value, 20);
+      expect(intraPayto.asset, 'usd');
+    });
+
+    test('should parse INTRA payment with only BIC', () {
+      final intraPayto = Payto('payto://intra/DEUTDEFF500');
+
+      expect(intraPayto.bic, 'DEUTDEFF500');
+      expect(intraPayto.accountNumber, 'DEUTDEFF500');
+    });
+
+    test('should set BIC for INTRA payment', () {
+      final intraPayto = Payto('payto://intra/address');
+      intraPayto.bic = 'CHASUS33XXX';
+
+      expect(intraPayto.bic, 'CHASUS33XXX');
+    });
+
+    test('should set account number for INTRA payment', () {
+      final intraPayto = Payto('payto://intra/DEUTDEFF500/oldaccount');
+      intraPayto.accountNumber = 'ACC123456';
+
+      expect(intraPayto.bic, 'DEUTDEFF500');
+      expect(intraPayto.accountNumber, 'ACC123456');
+    });
+
+    test('should validate BIC format for INTRA', () {
+      final intraPayto = Payto('payto://intra/address');
+
+      expect(
+        () => intraPayto.bic = 'invalid',
+        throwsA(isA<PaytoException>()),
+      );
+    });
+
+    test('should handle hexadecimal account numbers', () {
+      final intraPayto = Payto('payto://intra/pingchb2/abc123def456');
+
+      expect(intraPayto.accountNumber, 'abc123def456');
+      expect(intraPayto.bic, 'PINGCHB2');
+    });
+
+    test('should handle long alphanumeric account numbers', () {
+      final intraPayto = Payto(
+          'payto://intra/DEUTDEFF500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+
+      expect(intraPayto.accountNumber,
+          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(intraPayto.bic, 'DEUTDEFF500');
+    });
+
+    test('should return uppercase BIC', () {
+      final intraPayto = Payto('payto://intra/deutdeff500');
+
+      expect(intraPayto.bic, 'DEUTDEFF500');
+    });
+
+    test('should include BIC and account in JSON', () {
+      final intraPayto = Payto(
+          'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20');
+      final json = intraPayto.toJsonObject();
+
+      expect(json.bic, 'PINGCHB2');
+      expect(
+          json.accountNumber, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(json.amount, 'usd:20');
+      expect(json.value, 20);
+    });
+  });
+
   group('UPI/PIX Payments', () {
     test('should handle UPI email alias', () {
       final upiPayto = Payto('payto://upi/USER@example.com');

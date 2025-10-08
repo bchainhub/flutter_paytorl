@@ -72,27 +72,32 @@ class Payto {
     }
   }
 
-  /// Gets account number for ACH payments
-  int? get accountNumber {
+  /// Gets account number for ACH or INTRA payments
+  dynamic get accountNumber {
     if (_uri.host == 'ach') {
       final parts = _uri.path.split('/');
       final accountStr = parts.length > 2 ? parts[2] : parts[1];
       if (RegexPatterns.accountNumberRegex.hasMatch(accountStr)) {
         return int.parse(accountStr);
       }
+    } else if (_uri.host == 'intra') {
+      final parts = _uri.path.split('/');
+      final accountStr = parts.length > 2 ? parts[2] : parts[1];
+      return accountStr.isNotEmpty ? accountStr : null;
     }
     return null;
   }
 
-  /// Sets account number for ACH payments
-  set accountNumber(int? value) {
-    if (_uri.host.isEmpty || _uri.host != 'ach') {
-      throw PaytoException('Invalid hostname, must be ach');
+  /// Sets account number for ACH or INTRA payments
+  set accountNumber(dynamic value) {
+    if (_uri.host.isEmpty || (_uri.host != 'ach' && _uri.host != 'intra')) {
+      throw PaytoException('Invalid hostname, must be ach or intra');
     }
 
     if (value != null) {
       final accountStr = value.toString();
-      if (!RegexPatterns.accountNumberRegex.hasMatch(accountStr)) {
+      if (_uri.host == 'ach' &&
+          !RegexPatterns.accountNumberRegex.hasMatch(accountStr)) {
         throw PaytoException('Invalid account number format');
       }
     }
@@ -177,10 +182,10 @@ class Payto {
     }
   }
 
-  /// Gets BIC/SWIFT code from BIC or IBAN path
+  /// Gets BIC/SWIFT code from BIC, INTRA, or IBAN path
   String? get bic {
-    if (_uri.host == 'bic') {
-      final bicValue = _getHostpathParts(type: 'bic', position: 1);
+    if (_uri.host == 'bic' || _uri.host == 'intra') {
+      final bicValue = _getHostpathParts(type: _uri.host, position: 1);
       return bicValue?.toUpperCase();
     } else if (_uri.host == 'iban') {
       if (_uri.path.length > 2) {
@@ -196,7 +201,7 @@ class Payto {
     if (value != null && !RegexPatterns.bicRegex.hasMatch(value)) {
       throw PaytoException('Invalid BIC format');
     }
-    if (_uri.host == 'bic') {
+    if (_uri.host == 'bic' || _uri.host == 'intra') {
       _setPathParts(value?.toUpperCase(), 1);
     } else if (_uri.host == 'iban') {
       if (_uri.path.length > 2) {
