@@ -36,4 +36,8 @@ class RegexPatterns {
 
   /// Matches Unix timestamps (positive integers)
   static final RegExp numberRegex = RegExp(r'^\d+$');
+
+  /// Matches language/locale codes (e.g., 'en', 'en-US', 'en-us', 'fr-CA')
+  /// Allows: 2 lowercase letters, optionally followed by '-' and either 2 lowercase or 2 uppercase letters
+  static final RegExp langRegex = RegExp(r'^[a-z]{2}(-[a-z]{2}|-[A-Z]{2})?$');
 }
