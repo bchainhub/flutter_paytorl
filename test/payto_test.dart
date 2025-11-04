@@ -342,14 +342,19 @@ void main() {
       expect(payto.language, 'en-us');
     });
 
-    test('should normalize uppercase language codes', () {
+    test('should preserve case from URL even if invalid format', () {
+      // Getter doesn't validate, only returns what's in URL
       final payto = Payto('payto://example/address?lang=EN');
-      expect(payto.language, 'en');
+      expect(payto.language, 'EN');
+
+      // But setting invalid format should throw
+      final payto2 = Payto('payto://example/address');
+      expect(() => payto2.language = 'EN', throwsA(isA<PaytoException>()));
     });
 
-    test('should normalize mixed case locale', () {
-      final payto = Payto('payto://example/address?lang=En-Us');
-      expect(payto.language, 'en-us');
+    test('should preserve case from URL', () {
+      final payto = Payto('payto://example/address?lang=en-US');
+      expect(payto.language, 'en-US');
     });
 
     test('should handle multiple query parameters with language', () {
@@ -373,11 +378,11 @@ void main() {
       expect(payto.toString(), contains('lang=es-mx'));
     });
 
-    test('should normalize mixed case input', () {
+    test('should preserve case when setting', () {
       final payto = Payto('payto://example/address');
-      payto.language = 'de-De';
-      expect(payto.language, 'de-de');
-      expect(payto.toString(), contains('lang=de-de'));
+      payto.language = 'en-US';
+      expect(payto.language, 'en-US');
+      expect(payto.toString(), contains('lang=en-US'));
     });
 
     test('should remove language when set to null', () {
@@ -409,8 +414,6 @@ void main() {
       expect(() => payto.language = 'de-de', returnsNormally);
       expect(() => payto.language = 'en-US', returnsNormally);
       expect(() => payto.language = 'es-MX', returnsNormally);
-      expect(() => payto.language = 'en-Us', returnsNormally);
-      expect(() => payto.language = 'es-Mx', returnsNormally);
     });
 
     test('should reject invalid language codes', () {
@@ -425,6 +428,9 @@ void main() {
       expect(() => payto.language = 'en_us', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'EN-US', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'EN', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'En-Us', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'en-Us', throwsA(isA<PaytoException>()));
+      expect(() => payto.language = 'es-Mx', throwsA(isA<PaytoException>()));
     });
 
     test('should include language in JSON object', () {

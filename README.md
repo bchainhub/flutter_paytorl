@@ -64,12 +64,12 @@ void main() {
   print(payto.colorBackground); // 'ff0000'
 
   // Language/locale support
-  payto.language = 'en-us';  // Set language to US English
-  print(payto.language);     // 'en-us'
+  payto.language = 'en-US';  // Set language to US English (case preserved)
+  print(payto.language);     // 'en-US'
 
   // Parse existing language parameter
-  final localizedPayto = Payto('payto://example/address?lang=es-mx&amount=50');
-  print(localizedPayto.language); // 'es-mx'
+  final localizedPayto = Payto('payto://example/address?lang=en-US&amount=50');
+  print(localizedPayto.language); // 'en-US' (case preserved)
   print(localizedPayto.amount);   // '50'
 
   // ACH payment examples
@@ -128,7 +128,7 @@ Creates a new Payto instance from a payto URL string.
 | `donate` | `bool?` | Donation flag |
 | `fiat` | `String?` | Fiat currency code (case-insensitive) |
 | `iban` | `String?` | International Bank Account Number (case-insensitive) |
-| `language` | `String?` | Language/locale code (2-letter or locale format) |
+| `language` | `String?` | Language/locale code (2 lowercase letters, optionally followed by `-` and 2 letters in lowercase or uppercase) |
 | `location` | `String?` | Location data (format depends on void type) |
 | `message` | `String?` | Payment message |
 | `mode` | `String?` | Preferred payment mode (e.g., 'qr', 'nfc', 'card') |
@@ -151,42 +151,52 @@ You can set the features by setting values for example for the following functio
 
 ### Language/Locale Support
 
-The library supports language and locale specification through the `lang` query parameter:
+The library supports language and locale specification through the `lang` query parameter. The format is validated using a strict regex pattern, and case is preserved as set:
 
 ```dart
-// Two-letter language codes
+// Two-letter language codes (must be lowercase)
 payto.language = 'en';  // English
 payto.language = 'es';  // Spanish
 payto.language = 'fr';  // French
 
 // Locale format (language-region)
-payto.language = 'en-us';  // US English
+// First part must be lowercase, second part can be lowercase or uppercase
+payto.language = 'en-us';  // US English (all lowercase)
+payto.language = 'en-US';  // US English (uppercase region)
 payto.language = 'en-gb';  // British English
-payto.language = 'es-mx';  // Mexican Spanish
+payto.language = 'es-MX';  // Mexican Spanish (uppercase region)
 payto.language = 'fr-ca';  // Canadian French
 
-// Mixed case is automatically normalized
-payto.language = 'En-Us';  // Normalized to 'en-us'
-payto.language = 'ES-MX';  // Normalized to 'es-mx'
+// Case is preserved (no normalization)
+payto.language = 'en-US';
+print(payto.language); // 'en-US' (preserved as set)
 
 // Parse from URL
-final payto = Payto('payto://example/address?lang=de-de&amount=100');
-print(payto.language); // 'de-de'
+final payto = Payto('payto://example/address?lang=en-US&amount=100');
+print(payto.language); // 'en-US' (case preserved from URL)
 ```
 
 **Valid formats:**
 
-- ✅ `en` (two-letter language code)
-- ✅ `en-us` (locale format, lowercase)
-- ✅ `en-US` (locale format, mixed case)
-- ✅ `en-Us` (locale format, mixed case)
+- ✅ `en` (two lowercase letters)
+- ✅ `en-us` (two lowercase + `-` + two lowercase)
+- ✅ `en-US` (two lowercase + `-` + two uppercase)
 
 **Invalid formats:**
 
-- ❌ `EN-US` (all uppercase)
+- ❌ `EN` (uppercase first part)
+- ❌ `EN-US` (uppercase first part)
+- ❌ `En-Us` (mixed case in first part)
+- ❌ `en-Us` (mixed case in second part)
 - ❌ `eng` (three letters)
 - ❌ `en-us-extra` (invalid format)
 - ❌ `en_us` (wrong separator)
+
+**Validation rules:**
+
+- Language code must start with 2 lowercase letters
+- Optional region code must be either all lowercase or all uppercase (not mixed)
+- Case is preserved exactly as provided (no automatic normalization)
 
 ### Mode Support
 
