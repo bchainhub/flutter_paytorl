@@ -25,7 +25,7 @@ Add `flutter_paytorl` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_paytorl: ^0.1.4
+  flutter_paytorl: ^0.1.9
 ```
 
 Or install via command line:
@@ -84,6 +84,13 @@ void main() {
   print(intraPayto.amount); // 'usd:20'
   print(intraPayto.value); // 20
 
+  // BIC payment with optional beneficiary account / CORE ID
+  final bankPayto = Payto('payto://bic/deutdeff500');
+  bankPayto.accountId = 'cb1958b39698a44bdae37f881e68dce073823a48a631';
+  print(bankPayto.bic); // 'DEUTDEFF500'
+  print(bankPayto.accountId); // 'cb1958b39698a44bdae37f881e68dce073823a48a631'
+  print(bankPayto.toString()); // 'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631'
+
   // UPI/PIX payment examples (case-insensitive email)
   final upiPayto = Payto('payto://upi/USER@example.com');
   print(upiPayto.accountAlias); // 'user@example.com'
@@ -115,6 +122,7 @@ Creates a new Payto instance from a payto URL string.
 | Property | Type | Description |
 |----------|------|-------------|
 | `accountAlias` | `String?` | Email address for UPI/PIX payments (case-insensitive) |
+| `accountId` | `String?` | Account identifier for `bic` and `intra` payments |
 | `accountNumber` | `dynamic` | Account number for ACH payments (int) or INTRA payments (String) |
 | `address` | `String?` | Payment address |
 | `amount` | `String?` | Payment amount with optional currency prefix |
@@ -144,6 +152,21 @@ Creates a new Payto instance from a payto URL string.
 | `toString()` | `String` | Returns the complete payto URL string |
 | `toJson()` | `String` | Returns a JSON string representation |
 | `toJsonObject()` | `PaytoJson` | Returns a typed object with all properties |
+
+### BIC Payments
+
+Supports two formats (case-insensitive BIC):
+
+- `payto://bic/bic`
+- `payto://bic/bic/account-id`
+
+Example:
+
+```dart
+final payto = Payto('payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+print(payto.bic); // 'DEUTDEFF500'
+print(payto.accountId); // 'cb1958b39698a44bdae37f881e68dce073823a48a631'
+```
 
 ## Setup
 

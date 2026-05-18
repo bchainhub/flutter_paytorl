@@ -3,6 +3,9 @@ class PaytoJson {
   /// Email address for UPI/PIX payments (case-insensitive)
   final String? accountAlias;
 
+  /// Account identifier for BIC or INTRA payments
+  final String? accountId;
+
   /// Account number for ACH payments (int) or INTRA payments (String)
   final dynamic accountNumber;
 
@@ -117,6 +120,7 @@ class PaytoJson {
   /// Creates a new PaytoJson instance
   PaytoJson({
     required this.accountAlias,
+    required this.accountId,
     required this.accountNumber,
     required this.address,
     required this.amount,
@@ -159,6 +163,7 @@ class PaytoJson {
   /// Creates a PaytoJson instance from a JSON map
   factory PaytoJson.fromJson(Map<String, dynamic> json) => PaytoJson(
         accountAlias: json['accountAlias'] as String?,
+        accountId: json['accountId'] as String?,
         accountNumber: json['accountNumber'],
         address: json['address'] as String?,
         amount: json['amount'] as String?,
@@ -201,6 +206,7 @@ class PaytoJson {
   /// Converts the PaytoJson instance to a JSON map
   Map<String, dynamic> toJson() => {
         if (accountAlias != null) 'accountAlias': accountAlias,
+        if (accountId != null) 'accountId': accountId,
         if (accountNumber != null) 'accountNumber': accountNumber,
         if (address != null) 'address': address,
         if (amount != null) 'amount': amount,

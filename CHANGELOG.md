@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.9
+
+> Added
+
+- **BIC Account ID Support**: Added optional beneficiary account / CORE ID support for `bic` URLs
+  - Supports `payto://bic/{bic}/{account_id}`
+  - New `accountId` property for `bic` and `intra`
+  - JSON serialization now includes `accountId`
+
+> Changed
+
+- Updated `accountNumber` handling to support `bic` alongside `ach` and `intra`
+- Updated package dependencies to current versions
+- Refreshed README examples and API reference for BIC account IDs
+
 ## 0.1.8
 
 > Added

@@ -72,7 +72,7 @@ class Payto {
     }
   }
 
-  /// Gets account number for ACH or INTRA payments
+  /// Gets account number for ACH, BIC, or INTRA payments
   dynamic get accountNumber {
     if (_uri.host == 'ach') {
       final parts = _uri.path.split('/');
@@ -80,6 +80,10 @@ class Payto {
       if (RegexPatterns.accountNumberRegex.hasMatch(accountStr)) {
         return int.parse(accountStr);
       }
+    } else if (_uri.host == 'bic') {
+      final parts = _uri.path.split('/');
+      final accountStr = parts.length > 2 ? parts[2] : null;
+      return (accountStr != null && accountStr.isNotEmpty) ? accountStr : null;
     } else if (_uri.host == 'intra') {
       final parts = _uri.path.split('/');
       final accountStr = parts.length > 2 ? parts[2] : parts[1];
@@ -88,10 +92,11 @@ class Payto {
     return null;
   }
 
-  /// Sets account number for ACH or INTRA payments
+  /// Sets account number for ACH, BIC, or INTRA payments
   set accountNumber(dynamic value) {
-    if (_uri.host.isEmpty || (_uri.host != 'ach' && _uri.host != 'intra')) {
-      throw PaytoException('Invalid hostname, must be ach or intra');
+    if (_uri.host.isEmpty ||
+        (_uri.host != 'ach' && _uri.host != 'bic' && _uri.host != 'intra')) {
+      throw PaytoException('Invalid hostname, must be ach, bic or intra');
     }
 
     if (value != null) {
@@ -106,13 +111,39 @@ class Payto {
     if (parts.length > 2) {
       if (value == null) {
         _setPathParts(null, 2);
-        _setPathParts(null, 1);
+        if (_uri.host != 'bic') {
+          _setPathParts(null, 1);
+        }
       } else {
         _setPathParts(value.toString(), 2);
       }
     } else if (parts.length > 1) {
-      _setPathParts(value?.toString(), 1);
+      if (_uri.host == 'bic') {
+        final bicStr = _getHostpathParts(type: 'bic', position: 1);
+        if (bicStr != null) {
+          _setPathParts(bicStr, 1);
+          _setPathParts(value?.toString(), 2);
+        }
+      } else {
+        _setPathParts(value?.toString(), 1);
+      }
     }
+  }
+
+  /// Gets account identifier for BIC or INTRA payments
+  String? get accountId {
+    if (_uri.host == 'bic' || _uri.host == 'intra') {
+      return accountNumber?.toString();
+    }
+    return null;
+  }
+
+  /// Sets account identifier for BIC or INTRA payments
+  set accountId(String? value) {
+    if (_uri.host != 'bic' && _uri.host != 'intra') {
+      throw PaytoException('Invalid hostname, must be bic or intra');
+    }
+    accountNumber = value;
   }
 
   /// Gets payment address
@@ -772,6 +803,7 @@ class Payto {
   /// Converts to PaytoJSON object with all properties
   PaytoJson toJsonObject() => PaytoJson(
         accountAlias: accountAlias,
+        accountId: accountId,
         accountNumber: accountNumber,
         address: address,
         amount: amount,
