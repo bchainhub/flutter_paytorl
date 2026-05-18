@@ -220,6 +220,45 @@ void main() {
       expect(bankPayto.bic, 'DEUTDEFF500');
     });
 
+    test('should parse BIC account id', () {
+      final bankPayto = Payto(
+          'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(bankPayto.bic, 'DEUTDEFF500');
+      expect(
+          bankPayto.accountId, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(bankPayto.accountNumber,
+          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+    });
+
+    test('should set BIC account id', () {
+      final bankPayto = Payto('payto://bic/deutdeff500');
+      bankPayto.accountId = 'ce1958b39698a44bdae37f881e68dce073823a48a631';
+      expect(bankPayto.bic, 'DEUTDEFF500');
+      expect(
+          bankPayto.accountId, 'ce1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(bankPayto.toString(),
+          'payto://bic/deutdeff500/ce1958b39698a44bdae37f881e68dce073823a48a631');
+    });
+
+    test('should clear BIC account id and preserve BIC path', () {
+      final bankPayto = Payto(
+          'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+      bankPayto.accountId = null;
+      expect(bankPayto.bic, 'DEUTDEFF500');
+      expect(bankPayto.accountId, null);
+      expect(bankPayto.toString(), 'payto://bic/deutdeff500');
+    });
+
+    test('should include BIC account id in JSON', () {
+      final bankPayto = Payto(
+          'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+      final json = bankPayto.toJsonObject();
+      expect(json.bic, 'DEUTDEFF500');
+      expect(json.accountId, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(
+          json.accountNumber, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
+    });
+
     test('should validate BIC format', () {
       final bankPayto = Payto('payto://bic/address');
       expect(
