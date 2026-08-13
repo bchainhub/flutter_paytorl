@@ -93,6 +93,9 @@ class PaytoJson {
   /// Receiver's name
   final String? receiverName;
 
+  /// Destination for payment receipts, such as an email address or phone number
+  final String? receipt;
+
   /// Recurring payment details
   final String? recurring;
 
@@ -150,6 +153,7 @@ class PaytoJson {
     required this.port,
     required this.protocol,
     required this.receiverName,
+    required this.receipt,
     required this.recurring,
     required this.routingNumber,
     required this.rtl,
@@ -193,6 +197,7 @@ class PaytoJson {
         port: json['port'] as String?,
         protocol: json['protocol'] as String? ?? '',
         receiverName: json['receiverName'] as String?,
+        receipt: json['receipt'] as String?,
         recurring: json['recurring'] as String?,
         routingNumber: json['routingNumber'] as int?,
         rtl: json['rtl'] as bool?,
@@ -236,6 +241,7 @@ class PaytoJson {
         if (port != null) 'port': port,
         if (protocol.isNotEmpty) 'protocol': protocol,
         if (receiverName != null) 'receiverName': receiverName,
+        if (receipt != null) 'receipt': receipt,
         if (recurring != null) 'recurring': recurring,
         if (routingNumber != null) 'routingNumber': routingNumber,
         if (rtl != null) 'rtl': rtl,

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.10
+
+> Added
+
+- Added support for the optional `receipt` query parameter for receipt-delivery destinations such as email addresses and SMS-capable phone numbers; space characters are removed automatically
+- Added `receipt` to `PaytoJson` serialization and deserialization
+- Added test coverage for parsing, URL encoding, JSON conversion, updates, and removal
+
+> Changed
+
+- Updated `flutter_lints` from version 5 to version 6
+
 ## 0.1.9
 
 > Added

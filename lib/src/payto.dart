@@ -554,6 +554,30 @@ class Payto {
     }
   }
 
+  /// Gets the destination for payment receipts (for example, an email address
+  /// or phone number)
+  String? get receipt {
+    final normalizedValue =
+        _uri.queryParameters['receipt']?.replaceAll(' ', '');
+    return normalizedValue == null || normalizedValue.isEmpty
+        ? null
+        : normalizedValue;
+  }
+
+  /// Sets the destination for payment receipts
+  set receipt(String? value) {
+    final normalizedValue = value?.replaceAll(' ', '');
+    if (normalizedValue != null && normalizedValue.isNotEmpty) {
+      _uri = _uri.replace(
+        queryParameters: {..._uri.queryParameters, 'receipt': normalizedValue},
+      );
+    } else {
+      final newParams = Map<String, String>.from(_uri.queryParameters)
+        ..remove('receipt');
+      _uri = _uri.replace(queryParameters: newParams);
+    }
+  }
+
   /// Gets recurring payment info
   String? get recurring => _uri.queryParameters['rc']?.toLowerCase();
 
@@ -833,6 +857,7 @@ class Payto {
         port: port,
         protocol: protocol,
         receiverName: receiverName,
+        receipt: receipt,
         recurring: recurring,
         routingNumber: routingNumber,
         rtl: rtl,
