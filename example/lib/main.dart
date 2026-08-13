@@ -8,13 +8,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'PaytoRL Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
-        home: const PaytoDemo(),
-      );
+    title: 'PaytoRL Demo',
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      useMaterial3: true,
+    ),
+    home: const PaytoDemo(),
+  );
 }
 
 class PaytoDemo extends StatefulWidget {
@@ -60,7 +60,8 @@ class _PaytoDemoState extends State<PaytoDemo> {
     if (_payto == null) return;
 
     setState(() {
-      _result = '''
+      _result =
+          '''
 Payment Details:
 ---------------
 Address: ${_payto!.address}

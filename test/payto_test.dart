@@ -5,7 +5,8 @@ void main() {
   group('Payto URL Parsing', () {
     test('should parse basic payment URL', () {
       final payto = Payto(
-          'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur');
+        'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur',
+      );
 
       expect(payto.address, 'cb7147879011ea207df5b35a24ca6f0859dcfb145999');
       expect(payto.amount, 'ctn:10.01');
@@ -16,10 +17,7 @@ void main() {
     });
 
     test('should throw on invalid protocol', () {
-      expect(
-        () => Payto('http://example.com'),
-        throwsA(isA<PaytoException>()),
-      );
+      expect(() => Payto('http://example.com'), throwsA(isA<PaytoException>()));
     });
   });
 
@@ -44,6 +42,24 @@ void main() {
       expect(payto.colorForeground, '000000');
       expect(payto.toString(), contains('color-b=ff0000'));
       expect(payto.toString(), contains('color-f=000000'));
+    });
+
+    test('should get, set, serialize, and remove receipt destination', () {
+      final payto = Payto('payto://xcb/address?receipt=payments%40example.com');
+      expect(payto.receipt, 'payments@example.com');
+      expect(payto.toJsonObject().receipt, 'payments@example.com');
+      expect(payto.toJsonObject().toJson()['receipt'], 'payments@example.com');
+
+      payto.receipt = '+421 900 123 456';
+      expect(payto.receipt, '+421900123456');
+      expect(payto.toString(), contains('receipt=%2B421900123456'));
+
+      payto.receipt = '   ';
+      expect(payto.receipt, isNull);
+
+      payto.receipt = null;
+      expect(payto.receipt, isNull);
+      expect(payto.toJsonObject().toJson(), isNot(contains('receipt')));
     });
   });
 
@@ -75,20 +91,26 @@ void main() {
   group('INTRA Payments', () {
     test('should parse INTRA payment with BIC and account', () {
       final intraPayto = Payto(
-          'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631');
+        'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
 
       expect(intraPayto.bic, 'PINGCHB2');
-      expect(intraPayto.accountNumber,
-          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(
+        intraPayto.accountNumber,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
     });
 
     test('should parse INTRA payment with amount', () {
       final intraPayto = Payto(
-          'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20');
+        'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20',
+      );
 
       expect(intraPayto.bic, 'PINGCHB2');
-      expect(intraPayto.accountNumber,
-          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(
+        intraPayto.accountNumber,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
       expect(intraPayto.amount, 'usd:20');
       expect(intraPayto.value, 20);
       expect(intraPayto.asset, 'usd');
@@ -119,10 +141,7 @@ void main() {
     test('should validate BIC format for INTRA', () {
       final intraPayto = Payto('payto://intra/address');
 
-      expect(
-        () => intraPayto.bic = 'invalid',
-        throwsA(isA<PaytoException>()),
-      );
+      expect(() => intraPayto.bic = 'invalid', throwsA(isA<PaytoException>()));
     });
 
     test('should handle hexadecimal account numbers', () {
@@ -134,10 +153,13 @@ void main() {
 
     test('should handle long alphanumeric account numbers', () {
       final intraPayto = Payto(
-          'payto://intra/DEUTDEFF500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+        'payto://intra/DEUTDEFF500/cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
 
-      expect(intraPayto.accountNumber,
-          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+      expect(
+        intraPayto.accountNumber,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
       expect(intraPayto.bic, 'DEUTDEFF500');
     });
 
@@ -149,12 +171,15 @@ void main() {
 
     test('should include BIC and account in JSON', () {
       final intraPayto = Payto(
-          'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20');
+        'payto://intra/pingchb2/cb1958b39698a44bdae37f881e68dce073823a48a631?amount=usd:20',
+      );
       final json = intraPayto.toJsonObject();
 
       expect(json.bic, 'PINGCHB2');
       expect(
-          json.accountNumber, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
+        json.accountNumber,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
       expect(json.amount, 'usd:20');
       expect(json.value, 20);
     });
@@ -222,12 +247,17 @@ void main() {
 
     test('should parse BIC account id', () {
       final bankPayto = Payto(
-          'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+        'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
       expect(bankPayto.bic, 'DEUTDEFF500');
       expect(
-          bankPayto.accountId, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
-      expect(bankPayto.accountNumber,
-          'cb1958b39698a44bdae37f881e68dce073823a48a631');
+        bankPayto.accountId,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
+      expect(
+        bankPayto.accountNumber,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
     });
 
     test('should set BIC account id', () {
@@ -235,14 +265,19 @@ void main() {
       bankPayto.accountId = 'ce1958b39698a44bdae37f881e68dce073823a48a631';
       expect(bankPayto.bic, 'DEUTDEFF500');
       expect(
-          bankPayto.accountId, 'ce1958b39698a44bdae37f881e68dce073823a48a631');
-      expect(bankPayto.toString(),
-          'payto://bic/deutdeff500/ce1958b39698a44bdae37f881e68dce073823a48a631');
+        bankPayto.accountId,
+        'ce1958b39698a44bdae37f881e68dce073823a48a631',
+      );
+      expect(
+        bankPayto.toString(),
+        'payto://bic/deutdeff500/ce1958b39698a44bdae37f881e68dce073823a48a631',
+      );
     });
 
     test('should clear BIC account id and preserve BIC path', () {
       final bankPayto = Payto(
-          'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+        'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
       bankPayto.accountId = null;
       expect(bankPayto.bic, 'DEUTDEFF500');
       expect(bankPayto.accountId, null);
@@ -251,12 +286,15 @@ void main() {
 
     test('should include BIC account id in JSON', () {
       final bankPayto = Payto(
-          'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631');
+        'payto://bic/deutdeff500/cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
       final json = bankPayto.toJsonObject();
       expect(json.bic, 'DEUTDEFF500');
       expect(json.accountId, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
       expect(
-          json.accountNumber, 'cb1958b39698a44bdae37f881e68dce073823a48a631');
+        json.accountNumber,
+        'cb1958b39698a44bdae37f881e68dce073823a48a631',
+      );
     });
 
     test('should validate BIC format', () {
@@ -463,7 +501,9 @@ void main() {
       expect(() => payto.language = 'e', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'english', throwsA(isA<PaytoException>()));
       expect(
-          () => payto.language = 'en-us-extra', throwsA(isA<PaytoException>()));
+        () => payto.language = 'en-us-extra',
+        throwsA(isA<PaytoException>()),
+      );
       expect(() => payto.language = 'en_us', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'EN-US', throwsA(isA<PaytoException>()));
       expect(() => payto.language = 'EN', throwsA(isA<PaytoException>()));
@@ -481,7 +521,8 @@ void main() {
 
     test('should handle language in complex URL', () {
       final payto = Payto(
-          'payto://xcb/address?amount=10&lang=es-mx&fiat=eur&message=test');
+        'payto://xcb/address?amount=10&lang=es-mx&fiat=eur&message=test',
+      );
       expect(payto.language, 'es-mx');
       expect(payto.amount, '10');
       expect(payto.fiat, 'eur');
