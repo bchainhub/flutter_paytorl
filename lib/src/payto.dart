@@ -301,8 +301,9 @@ class Payto {
     if (token != null) {
       amount = '$token:${value ?? prevValue ?? ''}';
     } else if (token == null) {
-      amount =
-          value != null || prevValue != null ? ':${value ?? prevValue}' : null;
+      amount = value != null || prevValue != null
+          ? ':${value ?? prevValue}'
+          : null;
     } else if (value != null) {
       amount = '${prevToken != null ? '$prevToken:' : ''}$value';
     }
@@ -323,7 +324,8 @@ class Payto {
     if (value != null) {
       if (value < 0 || !RegexPatterns.numberRegex.hasMatch(value.toString())) {
         throw PaytoException(
-            'Invalid deadline format. Must be a positive integer (Unix timestamp).');
+          'Invalid deadline format. Must be a positive integer (Unix timestamp).',
+        );
       }
       _uri = _uri.replace(
         queryParameters: {..._uri.queryParameters, 'dl': value.toString()},
@@ -478,7 +480,8 @@ class Payto {
     if (voidType == 'geo') {
       if (!RegexPatterns.geoLocationRegex.hasMatch(value)) {
         throw PaytoException(
-            'Invalid geo location format. Must be "latitude,longitude" with valid coordinates.');
+          'Invalid geo location format. Must be "latitude,longitude" with valid coordinates.',
+        );
       }
     } else if (voidType == 'plus') {
       if (!RegexPatterns.plusCodeRegex.hasMatch(value)) {
@@ -557,8 +560,10 @@ class Payto {
   /// Gets the destination for payment receipts (for example, an email address
   /// or phone number)
   String? get receipt {
-    final normalizedValue =
-        _uri.queryParameters['receipt']?.replaceAll(' ', '');
+    final normalizedValue = _uri.queryParameters['receipt']?.replaceAll(
+      ' ',
+      '',
+    );
     return normalizedValue == null || normalizedValue.isEmpty
         ? null
         : normalizedValue;
@@ -613,7 +618,8 @@ class Payto {
     if (value != null &&
         !RegexPatterns.routingNumberRegex.hasMatch(value.toString())) {
       throw PaytoException(
-          'Invalid routing number format. Must be exactly 9 digits.');
+        'Invalid routing number format. Must be exactly 9 digits.',
+      );
     }
     if (_uri.path.length > 2) {
       _setPathParts(value?.toString(), 1);
@@ -682,7 +688,8 @@ class Payto {
 
     if (value.length != 3) {
       throw PaytoException(
-          'Split requires receiver, amount, and percentage flag');
+        'Split requires receiver, amount, and percentage flag',
+      );
     }
 
     final receiver = value[0] as String;
@@ -697,7 +704,7 @@ class Payto {
     _uri = _uri.replace(
       queryParameters: {
         ..._uri.queryParameters,
-        'split': '$prefix$amount@$receiver'
+        'split': '$prefix$amount@$receiver',
       },
     );
   }
@@ -744,14 +751,14 @@ class Payto {
         _uri = _uri.replace(
           queryParameters: {
             ..._uri.queryParameters,
-            'amount': '${parts[0]}:$value'
+            'amount': '${parts[0]}:$value',
           },
         );
       } else {
         _uri = _uri.replace(
           queryParameters: {
             ..._uri.queryParameters,
-            'amount': value.toString()
+            'amount': value.toString(),
           },
         );
       }
@@ -774,10 +781,7 @@ class Payto {
   /// Sets void type
   set void_(String? value) {
     if (value != null) {
-      _uri = _uri.replace(
-        host: 'void',
-        path: '/${value.toLowerCase()}',
-      );
+      _uri = _uri.replace(host: 'void', path: '/${value.toLowerCase()}');
     } else {
       if (_uri.host == 'void') {
         _uri = _uri.replace(path: '/');
@@ -826,47 +830,47 @@ class Payto {
 
   /// Converts to PaytoJSON object with all properties
   PaytoJson toJsonObject() => PaytoJson(
-        accountAlias: accountAlias,
-        accountId: accountId,
-        accountNumber: accountNumber,
-        address: address,
-        amount: amount,
-        asset: asset,
-        barcode: barcode,
-        bic: bic,
-        colorBackground: _uri.queryParameters['color-b'],
-        colorForeground: _uri.queryParameters['color-f'],
-        currency: currency,
-        deadline: deadline,
-        donate: donate,
-        fiat: fiat,
-        fragment: fragment,
-        host: host,
-        hostname: hostname,
-        href: href,
-        iban: iban,
-        item: item,
-        language: language,
-        location: location,
-        message: message,
-        mode: mode,
-        network: network,
-        organization: organization,
-        origin: origin,
-        path: path,
-        port: port,
-        protocol: protocol,
-        receiverName: receiverName,
-        receipt: receipt,
-        recurring: recurring,
-        routingNumber: routingNumber,
-        rtl: rtl,
-        search: search,
-        split: split,
-        swap: swap,
-        value: value,
-        void_: void_,
-      );
+    accountAlias: accountAlias,
+    accountId: accountId,
+    accountNumber: accountNumber,
+    address: address,
+    amount: amount,
+    asset: asset,
+    barcode: barcode,
+    bic: bic,
+    colorBackground: _uri.queryParameters['color-b'],
+    colorForeground: _uri.queryParameters['color-f'],
+    currency: currency,
+    deadline: deadline,
+    donate: donate,
+    fiat: fiat,
+    fragment: fragment,
+    host: host,
+    hostname: hostname,
+    href: href,
+    iban: iban,
+    item: item,
+    language: language,
+    location: location,
+    message: message,
+    mode: mode,
+    network: network,
+    organization: organization,
+    origin: origin,
+    path: path,
+    port: port,
+    protocol: protocol,
+    receiverName: receiverName,
+    receipt: receipt,
+    recurring: recurring,
+    routingNumber: routingNumber,
+    rtl: rtl,
+    search: search,
+    split: split,
+    swap: swap,
+    value: value,
+    void_: void_,
+  );
 
   /// Gets background color
   String? get colorBackground => _uri.queryParameters['color-b'];

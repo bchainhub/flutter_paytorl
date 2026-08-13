@@ -10,6 +10,7 @@
 
 > Changed
 
+- Raised the minimum supported SDK versions to Dart 3.8 and Flutter 3.32
 - Updated `flutter_lints` from version 5 to version 6
 
 ## 0.1.9
