@@ -141,7 +141,7 @@ Creates a new Payto instance from a payto URL string.
 | `message` | `String?` | Payment message |
 | `mode` | `String?` | Preferred payment mode (e.g., 'qr', 'nfc', 'card') |
 | `network` | `String?` | Network identifier (case-insensitive) |
-| `receipt` | `String?` | Destination for payment receipts, such as an email address or phone number; spaces are removed automatically |
+| `contact` | `String?` | Destination for payment receipts, such as an email address or phone number; spaces are removed automatically |
 | `routingNumber` | `int?` | Bank routing number (9 digits) |
 | `value` | `double?` | Numeric amount value |
 | `void_` | `String?` | Void path type (e.g., 'geo', 'plus') |

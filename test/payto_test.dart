@@ -44,22 +44,22 @@ void main() {
       expect(payto.toString(), contains('color-f=000000'));
     });
 
-    test('should get, set, serialize, and remove receipt destination', () {
-      final payto = Payto('payto://xcb/address?receipt=payments%40example.com');
-      expect(payto.receipt, 'payments@example.com');
-      expect(payto.toJsonObject().receipt, 'payments@example.com');
-      expect(payto.toJsonObject().toJson()['receipt'], 'payments@example.com');
+    test('should get, set, serialize, and remove contact destination', () {
+      final payto = Payto('payto://xcb/address?contact=payments%40example.com');
+      expect(payto.contact, 'payments@example.com');
+      expect(payto.toJsonObject().contact, 'payments@example.com');
+      expect(payto.toJsonObject().toJson()['contact'], 'payments@example.com');
 
-      payto.receipt = '+421 900 123 456';
-      expect(payto.receipt, '+421900123456');
-      expect(payto.toString(), contains('receipt=%2B421900123456'));
+      payto.contact = '+421 900 123 456';
+      expect(payto.contact, '+421900123456');
+      expect(payto.toString(), contains('contact=%2B421900123456'));
 
-      payto.receipt = '   ';
-      expect(payto.receipt, isNull);
+      payto.contact = '   ';
+      expect(payto.contact, isNull);
 
-      payto.receipt = null;
-      expect(payto.receipt, isNull);
-      expect(payto.toJsonObject().toJson(), isNot(contains('receipt')));
+      payto.contact = null;
+      expect(payto.contact, isNull);
+      expect(payto.toJsonObject().toJson(), isNot(contains('contact')));
     });
   });
 

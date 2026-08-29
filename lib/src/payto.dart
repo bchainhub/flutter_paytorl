@@ -559,8 +559,8 @@ class Payto {
 
   /// Gets the destination for payment receipts (for example, an email address
   /// or phone number)
-  String? get receipt {
-    final normalizedValue = _uri.queryParameters['receipt']?.replaceAll(
+  String? get contact {
+    final normalizedValue = _uri.queryParameters['contact']?.replaceAll(
       ' ',
       '',
     );
@@ -570,15 +570,15 @@ class Payto {
   }
 
   /// Sets the destination for payment receipts
-  set receipt(String? value) {
+  set contact(String? value) {
     final normalizedValue = value?.replaceAll(' ', '');
     if (normalizedValue != null && normalizedValue.isNotEmpty) {
       _uri = _uri.replace(
-        queryParameters: {..._uri.queryParameters, 'receipt': normalizedValue},
+        queryParameters: {..._uri.queryParameters, 'contact': normalizedValue},
       );
     } else {
       final newParams = Map<String, String>.from(_uri.queryParameters)
-        ..remove('receipt');
+        ..remove('contact');
       _uri = _uri.replace(queryParameters: newParams);
     }
   }
@@ -861,7 +861,7 @@ class Payto {
     port: port,
     protocol: protocol,
     receiverName: receiverName,
-    receipt: receipt,
+    contact: contact,
     recurring: recurring,
     routingNumber: routingNumber,
     rtl: rtl,
