@@ -303,7 +303,7 @@ List of sponsors: [![GitHub Sponsors](https://img.shields.io/github/sponsors/bch
 
 Use `payto://qr/{country}/{identifier}` with lowercase ISO country codes. PayQR is global; **Pay QR** is the website's label. Current mappings are BN tarusQR, KH KHQR, ID QRIS, LA LaoQR, MY DuitNow QR, MM MMQR, PH QR Ph, SG PayNow/SGQR, TH PromptPay/Thai QR and VN VietQR.
 
-See [PayQR URI API, field coverage and validation limits](docs/PAYQR.md). A PayTo URI, national payment payload, QR image and payment-network connection are separate things. Generating a syntactically valid QR does not imply participation in or authorization to acquire transactions from a payment network. Unsupported national profiles fail closed.
+See [PayQR URI API, field coverage and validation limits](doc/PAYQR.md). A PayTo URI, national payment payload, QR image and payment-network connection are separate things. Generating a syntactically valid QR does not imply participation in or authorization to acquire transactions from a payment network. Unsupported national profiles fail closed.
 
 PayQR support encodes/decodes URI and structured payment data only. National QR payload generation and rendering are owned by the PayTo website.
 
@@ -385,4 +385,4 @@ those formats and validate their requirements separately.
 **Validation coverage is partial:** all current Pay QR fields round-trip through
 the parameter map, but dedicated field accessors/top-level JSON properties and
 country-specific validation are not complete. See [field coverage and known
-validation gaps](docs/PAYQR.md#field-coverage-and-validation-boundaries).
+validation gaps](doc/PAYQR.md#field-coverage-and-validation-boundaries).
