@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'payqr.dart';
 
 import 'constants/regex_patterns.dart';
 import 'exceptions/payto_exception.dart';
@@ -11,9 +12,119 @@ class Payto {
 
   /// Creates a new Payto instance from a payto URL string
   Payto(String paytoString) : _uri = Uri.parse(paytoString) {
+    if (_uri.host.toLowerCase() == 'qr')
+      _uri = Uri.parse(PayQrTarget.parse(paytoString).toString());
     if (_uri.scheme != 'payto') {
       throw PaytoException('Invalid protocol, must be payto:');
     }
+  }
+
+  /// Presentation capabilities, not native encoders or data validation.
+  /// Null when only PayTo is available; omitted from JSON in that case.
+  List<String>? get formats {
+    if (network == 'iban') return const ['payto', 'epc'];
+    if (network != 'qr') return null;
+    final target = payQr!;
+    if (!['kh', 'la', 'my', 'mm', 'sg', 'th', 'vn'].contains(target.country))
+      return null;
+    return List.unmodifiable(['payto', target.scheme]);
+  }
+
+  /// Optional PayTo URI extensions; these do not encode EPC data.
+  String? get purpose => _uri.queryParameters['purpose'];
+  set purpose(String? value) => _setUriExtension('purpose', value);
+  String? get information => _uri.queryParameters['information'];
+  set information(String? value) => _setUriExtension('information', value);
+
+  void _setUriExtension(String key, String? value) {
+    if (network == 'qr') {
+      _setPayQrParameter(key, value);
+      return;
+    }
+    final params = {..._uri.queryParameters};
+    if (value == null) {
+      params.remove(key);
+    } else {
+      params[key] = value;
+    }
+    _uri = _uri.replace(queryParameters: params);
+  }
+
+  PayQrTarget? get payQr =>
+      network == 'qr' ? PayQrTarget.parse(_uri.toString()) : null;
+  String? get country => payQr?.country;
+  String? get scheme => payQr?.scheme;
+  String? get identifier => payQr?.identifier;
+  String? get identifierType => payQr?.identifierType;
+  set country(String? value) {
+    if (value == null) throw PaytoException('PayQR country is required');
+    _updatePayQr(country: value);
+  }
+
+  set identifier(String? value) {
+    if (value == null) throw PaytoException('PayQR identifier is required');
+    _updatePayQr(identifier: value);
+  }
+
+  set identifierType(String? value) {
+    if (value == null) throw PaytoException('PayQR identifierType is required');
+    _updatePayQr(identifierType: value);
+  }
+
+  /// QR Ph use case, distinct from pass presentation mode.
+  String? get paymentMode => payQr?.parameters['payment-mode'];
+  set paymentMode(String? value) => _setPayQrParameter('payment-mode', value);
+  String? get qrType => payQr?.parameters['qr-type'];
+  set qrType(String? value) => _setPayQrParameter('qr-type', value);
+
+  String? get reference => _uri.queryParameters['reference'];
+  set reference(String? value) {
+    if (network == 'qr') {
+      _setPayQrParameter('reference', value);
+      return;
+    }
+    final params = {..._uri.queryParameters};
+    if (value == null) {
+      params.remove('reference');
+    } else {
+      params['reference'] = value;
+    }
+    _uri = _uri.replace(queryParameters: params);
+  }
+
+  void _setPayQrParameter(String key, String? value) {
+    final target = payQr;
+    if (target == null) throw PaytoException('Expected qr network');
+    final parameters = {...target.parameters};
+    if (value == null || value.isEmpty) {
+      parameters.remove(key);
+    } else {
+      parameters[key] = value;
+    }
+    _uri = Uri.parse(
+      PayQrTarget(
+        country: target.country,
+        identifier: target.identifier,
+        parameters: parameters,
+      ).toString(),
+    );
+  }
+
+  void _updatePayQr({
+    String? country,
+    String? identifier,
+    String? identifierType,
+  }) {
+    final target = payQr;
+    if (target == null) throw PaytoException('Expected qr network');
+    _uri = Uri.parse(
+      PayQrTarget(
+        country: country ?? target.country,
+        identifier: identifier ?? target.identifier,
+        identifierType: identifierType ?? target.identifierType,
+        parameters: target.parameters,
+      ).toString(),
+    );
   }
 
   /// Extracts parts from combined hostname and pathname
@@ -147,16 +258,26 @@ class Payto {
   }
 
   /// Gets payment address
-  String? get address => _getPathParts();
+  String? get address => network == 'qr' ? identifier : _getPathParts();
 
   /// Sets payment address
-  set address(String? value) => _setPathParts(value);
+  set address(String? value) {
+    if (network == 'qr') {
+      identifier = value;
+      return;
+    }
+    _setPathParts(value);
+  }
 
   /// Gets payment amount
   String? get amount => _uri.queryParameters['amount'];
 
   /// Sets payment amount
   set amount(String? value) {
+    if (network == 'qr') {
+      _setPayQrParameter('amount', value);
+      return;
+    }
     if (value != null) {
       _uri = Uri(
         scheme: _uri.scheme,
@@ -392,7 +513,7 @@ class Payto {
   String get hostname => _uri.host.toLowerCase();
 
   /// Gets complete URL string
-  String get href => _uri.toString();
+  String get href => network == 'qr' ? payQr!.toString() : _uri.toString();
 
   /// Gets IBAN from path
   String? get iban {
@@ -499,6 +620,10 @@ class Payto {
 
   /// Sets payment message
   set message(String? value) {
+    if (network == 'qr') {
+      _setPayQrParameter('message', value);
+      return;
+    }
     if (value != null) {
       _uri = _uri.replace(
         queryParameters: {..._uri.queryParameters, 'message': value},
@@ -518,6 +643,10 @@ class Payto {
 
   /// Sets organization name
   set organization(String? value) {
+    if (network == 'qr') {
+      _setPayQrParameter('org', value);
+      return;
+    }
     if (value != null && value.length <= 25) {
       _uri = _uri.replace(
         queryParameters: {..._uri.queryParameters, 'org': value},
@@ -546,6 +675,10 @@ class Payto {
 
   /// Sets receiver name
   set receiverName(String? value) {
+    if (network == 'qr') {
+      _setPayQrParameter('receiver-name', value);
+      return;
+    }
     if (value != null) {
       _uri = _uri.replace(
         queryParameters: {..._uri.queryParameters, 'receiver-name': value},
@@ -823,13 +956,23 @@ class Payto {
 
   /// Converts to URI string
   @override
-  String toString() => _uri.toString();
+  String toString() => href;
 
   /// Converts to JSON string
-  String toJson() => _uri.toString();
+  String toJson() => href;
 
   /// Converts to PaytoJSON object with all properties
   PaytoJson toJsonObject() => PaytoJson(
+    formats: formats,
+    purpose: purpose,
+    information: information,
+    country: country,
+    scheme: scheme,
+    identifier: identifier,
+    identifierType: identifierType,
+    reference: reference,
+    paymentMode: paymentMode,
+    qrType: qrType,
     accountAlias: accountAlias,
     accountId: accountId,
     accountNumber: accountNumber,
