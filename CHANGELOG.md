@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.12
+
+- Added Pay QR URI parsing, serialization, normalization and supported-profile validation using `payto://qr/{country}/{identifier}`.
+- Added Pay QR metadata, parameter maps, and payment-mode/QR-type properties with JSON integration.
+- Added optional `formats` capability metadata for IBAN and supported Pay QR schemes; omitted for PayTo-only methods.
+- Added `reference`, `purpose` and `information` PayTo URI extensions and JSON properties.
+- Added raw EMV envelope inspection without national-payment semantic decoding or QR generation.
+- Added URI fixtures, format metadata and extension round-trip tests, and documented remaining validation gaps.
+- Moved package documentation to `doc/` to follow Pub package layout conventions.
+
 ## 0.1.11
 
 > Added
