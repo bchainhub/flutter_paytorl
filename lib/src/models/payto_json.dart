@@ -1,5 +1,17 @@
 /// A class representing the JSON structure of a Payto Resource Locator
 class PaytoJson {
+  /// Available presentation formats; absent for PayTo-only methods.
+  final List<String>? formats;
+  final String? purpose;
+  final String? information;
+  final String? country;
+  final String? scheme;
+  final String? identifier;
+  final String? identifierType;
+  final String? reference;
+  final String? paymentMode;
+  final String? qrType;
+
   /// Email address for UPI/PIX payments (case-insensitive)
   final String? accountAlias;
 
@@ -122,6 +134,16 @@ class PaytoJson {
 
   /// Creates a new PaytoJson instance
   PaytoJson({
+    this.formats,
+    this.purpose,
+    this.information,
+    this.country,
+    this.scheme,
+    this.identifier,
+    this.identifierType,
+    this.reference,
+    this.paymentMode,
+    this.qrType,
     required this.accountAlias,
     required this.accountId,
     required this.accountNumber,
@@ -166,6 +188,16 @@ class PaytoJson {
 
   /// Creates a PaytoJson instance from a JSON map
   factory PaytoJson.fromJson(Map<String, dynamic> json) => PaytoJson(
+    formats: (json['formats'] as List<dynamic>?)?.cast<String>(),
+    purpose: json['purpose'] as String?,
+    information: json['information'] as String?,
+    country: json['country'] as String?,
+    scheme: json['scheme'] as String?,
+    identifier: json['identifier'] as String?,
+    identifierType: json['identifierType'] as String?,
+    reference: json['reference'] as String?,
+    paymentMode: json['paymentMode'] as String?,
+    qrType: json['qrType'] as String?,
     accountAlias: json['accountAlias'] as String?,
     accountId: json['accountId'] as String?,
     accountNumber: json['accountNumber'],
@@ -210,6 +242,16 @@ class PaytoJson {
 
   /// Converts the PaytoJson instance to a JSON map
   Map<String, dynamic> toJson() => {
+    if (formats != null && formats!.length > 1) 'formats': formats,
+    if (purpose != null) 'purpose': purpose,
+    if (information != null) 'information': information,
+    if (country != null) 'country': country,
+    if (scheme != null) 'scheme': scheme,
+    if (identifier != null) 'identifier': identifier,
+    if (identifierType != null) 'identifierType': identifierType,
+    if (reference != null) 'reference': reference,
+    if (paymentMode != null) 'paymentMode': paymentMode,
+    if (qrType != null) 'qrType': qrType,
     if (accountAlias != null) 'accountAlias': accountAlias,
     if (accountId != null) 'accountId': accountId,
     if (accountNumber != null) 'accountNumber': accountNumber,
