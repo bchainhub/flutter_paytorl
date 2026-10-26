@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import '../lib/flutter_paytorl.dart';
+import 'package:flutter_paytorl/flutter_paytorl.dart';
 
 void check(bool condition) {
   if (!condition) throw StateError('PayQR contract assertion failed');
@@ -194,7 +194,7 @@ Map<String, void Function()> payQrContract() {
     check(p.toString() == before);
     p.qrType = null;
     check(p.qrType == null);
-    rejects(() => PayQrTarget.parse('payto://qr/ph/a?' + 'x' * 8192));
+    rejects(() => PayQrTarget.parse('payto://qr/ph/a?${'x' * 8192}'));
   };
   return tests;
 }

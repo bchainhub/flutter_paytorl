@@ -12,8 +12,9 @@ class Payto {
 
   /// Creates a new Payto instance from a payto URL string
   Payto(String paytoString) : _uri = Uri.parse(paytoString) {
-    if (_uri.host.toLowerCase() == 'qr')
+    if (_uri.host.toLowerCase() == 'qr') {
       _uri = Uri.parse(PayQrTarget.parse(paytoString).toString());
+    }
     if (_uri.scheme != 'payto') {
       throw PaytoException('Invalid protocol, must be payto:');
     }
@@ -25,8 +26,9 @@ class Payto {
     if (network == 'iban') return const ['payto', 'epc'];
     if (network != 'qr') return null;
     final target = payQr!;
-    if (!['kh', 'la', 'my', 'mm', 'sg', 'th', 'vn'].contains(target.country))
+    if (!['kh', 'la', 'my', 'mm', 'sg', 'th', 'vn'].contains(target.country)) {
       return null;
+    }
     return List.unmodifiable(['payto', target.scheme]);
   }
 
@@ -370,11 +372,11 @@ class Payto {
     }
   }
 
-  /// Gets currency as [asset, fiat] tuple
+  /// Gets currency as `[amount currency, swap asset]` tuple
   List<String?> get currency {
     final result = <String?>[null, null];
     final amountValue = _uri.queryParameters['amount'];
-    final fiatValue = _uri.queryParameters['fiat'];
+    final swapValue = swap;
 
     if (amountValue != null) {
       final amountArray = amountValue.split(':');
@@ -383,21 +385,21 @@ class Payto {
       }
     }
 
-    if (fiatValue != null) {
-      result[1] = fiatValue;
+    if (swapValue != null) {
+      result[1] = swapValue;
     }
 
     return result;
   }
 
-  /// Sets currency from [token, fiat, value] array
+  /// Sets currency from `[token, swap, value]` array
   set currency(List<String?> valueArray) {
     if (valueArray.length > 3) {
       throw PaytoException('Invalid currency array length');
     }
 
     final token = valueArray[0];
-    final fiat = valueArray.length > 1 ? valueArray[1] : null;
+    final swapAsset = valueArray.length > 1 ? valueArray[1] : null;
     final value = valueArray.length > 2 ? valueArray[2] : null;
 
     final amountValue = _uri.queryParameters['amount'];
@@ -413,10 +415,10 @@ class Payto {
       }
     }
 
-    if (fiat != null) {
-      this.fiat = fiat.toLowerCase();
-    } else if (fiat == null) {
-      this.fiat = null;
+    if (swapAsset != null) {
+      swap = swapAsset.toLowerCase();
+    } else if (swapAsset == null) {
+      swap = null;
     }
 
     if (token != null) {
@@ -478,22 +480,6 @@ class Payto {
     } else {
       final newParams = Map<String, String>.from(_uri.queryParameters)
         ..remove('donate');
-      _uri = _uri.replace(queryParameters: newParams);
-    }
-  }
-
-  /// Gets fiat currency code
-  String? get fiat => _uri.queryParameters['fiat']?.toLowerCase();
-
-  /// Sets fiat currency code
-  set fiat(String? value) {
-    if (value != null) {
-      _uri = _uri.replace(
-        queryParameters: {..._uri.queryParameters, 'fiat': value},
-      );
-    } else {
-      final newParams = Map<String, String>.from(_uri.queryParameters)
-        ..remove('fiat');
       _uri = _uri.replace(queryParameters: newParams);
     }
   }
@@ -568,7 +554,7 @@ class Payto {
 
   /// Gets location based on void type
   String? get location {
-    final voidType = this.void_;
+    final voidType = void_;
     if (voidType == null) return null;
 
     final value = _uri.queryParameters['loc'];
@@ -593,7 +579,7 @@ class Payto {
       return;
     }
 
-    final voidType = this.void_;
+    final voidType = void_;
     if (voidType == null) {
       throw PaytoException('Void type must be set before setting location');
     }
@@ -986,7 +972,6 @@ class Payto {
     currency: currency,
     deadline: deadline,
     donate: donate,
-    fiat: fiat,
     fragment: fragment,
     host: host,
     hostname: hostname,

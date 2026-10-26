@@ -30,7 +30,7 @@ class _PaytoDemoState extends State<PaytoDemo> {
   String _result = '';
 
   static const _defaultUrl =
-      'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur';
+      'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=eur:10.01&swap=ctn';
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ Amount: ${_payto!.amount}
 Value: ${_payto!.value}
 Network: ${_payto!.network}
 Currency: ${_payto!.currency}
-Fiat: ${_payto!.fiat}
+Transfer or swap asset: ${_payto!.swap}
 
 JSON Output:
 -----------
