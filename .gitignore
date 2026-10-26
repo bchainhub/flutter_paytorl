@@ -18,7 +18,6 @@ package-lock.json
 .flutter-plugins-dependencies
 .packages
 pubspec.lock
-analysis_options.yaml
 
 # IDE and editor files
 .idea/
@@ -61,7 +60,6 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .packages
 pubspec.lock
-analysis_options.yaml
 macos/
 linux/
 web/

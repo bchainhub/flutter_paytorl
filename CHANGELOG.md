@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Removed the `fiat` property and JSON field; the currency prefix in `amount` now defines the payment currency, including USD and EUR.
+- Changed the `currency` tuple to `[amount currency, swap asset]` and its setter to `[token, swap, value]`.
+- Added `swap` regression coverage and updated documentation and the example app for amount-based currency handling.
+- Updated compatible development dependencies and verified the example release web build.
+- Enabled Flutter lint rules, fixed lint findings, and formatted the package.
+
 ## 0.1.12
 
 - Added Pay QR URI parsing, serialization, normalization and supported-profile validation using `payto://qr/{country}/{identifier}`.

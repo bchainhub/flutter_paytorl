@@ -2,10 +2,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_paytorl/flutter_paytorl.dart';
 
 void main() {
+  test('amount currency and swap replace the legacy fiat hint', () {
+    final payto = Payto('payto://xcb/address?amount=usd:100&swap=ctn&fiat=eur');
+    expect(payto.currency, ['usd', 'ctn']);
+    expect(payto.value, 100);
+    expect(payto.toJsonObject().toJson().containsKey('fiat'), false);
+    payto.currency = ['eur', 'xau', '25'];
+    expect(payto.amount, 'eur:25');
+    expect(payto.swap, 'xau');
+  });
+
   group('Payto URL Parsing', () {
     test('should parse basic payment URL', () {
       final payto = Payto(
-        'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur',
+        'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&swap=eur',
       );
 
       expect(payto.address, 'cb7147879011ea207df5b35a24ca6f0859dcfb145999');
@@ -13,7 +23,7 @@ void main() {
       expect(payto.value, 10.01);
       expect(payto.network, 'xcb');
       expect(payto.currency, ['ctn', 'eur']);
-      expect(payto.fiat, 'eur');
+      expect(payto.swap, 'eur');
     });
 
     test('should throw on invalid protocol', () {
@@ -328,13 +338,13 @@ void main() {
 
   group('JSON Conversion', () {
     test('should convert to JSON object', () {
-      final payto = Payto('payto://xcb/address?amount=10&fiat=eur');
+      final payto = Payto('payto://xcb/address?amount=10&swap=eur');
       final json = payto.toJsonObject();
 
       expect(json.network, 'xcb');
       expect(json.address, 'address');
       expect(json.amount, '10');
-      expect(json.fiat, 'eur');
+      expect(json.swap, 'eur');
     });
 
     test('should handle all properties in JSON', () {
@@ -435,10 +445,10 @@ void main() {
     });
 
     test('should handle multiple query parameters with language', () {
-      final payto = Payto('payto://example/address?amount=10&lang=es&fiat=eur');
+      final payto = Payto('payto://example/address?amount=10&lang=es&swap=eur');
       expect(payto.language, 'es');
       expect(payto.amount, '10');
-      expect(payto.fiat, 'eur');
+      expect(payto.swap, 'eur');
     });
 
     test('should set language code', () {
@@ -521,11 +531,11 @@ void main() {
 
     test('should handle language in complex URL', () {
       final payto = Payto(
-        'payto://xcb/address?amount=10&lang=es-mx&fiat=eur&message=test',
+        'payto://xcb/address?amount=10&lang=es-mx&swap=eur&message=test',
       );
       expect(payto.language, 'es-mx');
       expect(payto.amount, '10');
-      expect(payto.fiat, 'eur');
+      expect(payto.swap, 'eur');
       expect(payto.message, 'test');
     });
 

@@ -43,20 +43,20 @@ import 'package:flutter_paytorl/flutter_paytorl.dart';
 
 void main() {
   // Basic payment URL
-  final paytoString = 'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=ctn:10.01&fiat=eur';
+  final paytoString = 'payto://xcb/cb7147879011ea207df5b35a24ca6f0859dcfb145999?amount=eur:10.01&swap=ctn';
   final payto = Payto(paytoString);
 
   // Standard payment properties
   print(payto.address);  // 'cb7147879011ea207df5b35a24ca6f0859dcfb145999'
-  print(payto.amount);   // 'ctn:10.01'
+  print(payto.amount);   // 'eur:10.01'
   print(payto.value);    // 10.01
   print(payto.network);  // 'xcb'
-  print(payto.currency); // ['ctn', 'eur']
+  print(payto.currency); // ['eur', 'ctn']
 
   // Update payment amount
   payto.value = 20.02;
-  print(payto.amount);   // 'ctn:20.02'
-  print(payto.fiat);     // 'eur'
+  print(payto.amount);   // 'eur:20.02'
+  print(payto.swap);     // 'ctn'
 
   // Color customization
   payto.colorBackground = 'ff0000';  // Red background (6-character hex)
@@ -131,10 +131,9 @@ Creates a new Payto instance from a payto URL string.
 | `bic` | `String?` | Bank Identifier Code (8 or 11 characters, case-insensitive) |
 | `colorBackground` | `String?` | Background color in 6-character hex format |
 | `colorForeground` | `String?` | Foreground color in 6-character hex format |
-| `currency` | `List<String?>?` | Currency codes array [asset, fiat] |
+| `currency` | `List<String?>?` | Currency codes array `[amount currency, swap asset]` |
 | `deadline` | `int?` | Payment deadline (Unix timestamp) |
 | `donate` | `bool?` | Donation flag |
-| `fiat` | `String?` | Fiat currency code (case-insensitive) |
 | `iban` | `String?` | International Bank Account Number (case-insensitive) |
 | `language` | `String?` | Language/locale code (2 lowercase letters, optionally followed by `-` and 2 letters in lowercase or uppercase) |
 | `location` | `String?` | Location data (format depends on void type) |
@@ -386,3 +385,7 @@ those formats and validate their requirements separately.
 the parameter map, but dedicated field accessors/top-level JSON properties and
 country-specific validation are not complete. See [field coverage and known
 validation gaps](doc/PAYQR.md#field-coverage-and-validation-boundaries).
+
+The currency prefix in `amount` defines the payment currency, including USD or EUR.
+Use `swap` for the asset to transfer or process, for example `amount=usd:100&swap=ctn`.
+The `currency` tuple is `[amount currency, swap asset]`; the former `fiat` property is removed.

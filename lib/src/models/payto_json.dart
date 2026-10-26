@@ -42,7 +42,7 @@ class PaytoJson {
   /// Foreground color in 6-character hex format
   final String? colorForeground;
 
-  /// Currency codes array [asset, fiat]
+  /// Currency codes array `[amount currency, swap asset]`
   final List<String?> currency;
 
   /// Payment deadline (Unix timestamp)
@@ -50,9 +50,6 @@ class PaytoJson {
 
   /// Donation flag
   final bool? donate;
-
-  /// Fiat currency code (case-insensitive)
-  final String? fiat;
 
   /// URL fragment
   final String fragment;
@@ -120,7 +117,7 @@ class PaytoJson {
   /// URL search string
   final String search;
 
-  /// Payment split information [receiver, amount, isPercentage]
+  /// Payment split information `[receiver, amount, isPercentage]`
   final List<dynamic>? split;
 
   /// Swap transaction details
@@ -157,7 +154,6 @@ class PaytoJson {
     required this.currency,
     required this.deadline,
     required this.donate,
-    required this.fiat,
     required this.fragment,
     required this.host,
     required this.hostname,
@@ -211,7 +207,6 @@ class PaytoJson {
     currency: (json['currency'] as List<dynamic>?)?.cast<String?>() ?? [],
     deadline: json['deadline'] as int?,
     donate: json['donate'] as bool?,
-    fiat: json['fiat'] as String?,
     fragment: json['fragment'] as String? ?? '',
     host: json['host'] as String? ?? '',
     hostname: json['hostname'] as String? ?? '',
@@ -265,7 +260,6 @@ class PaytoJson {
     if (currency.isNotEmpty) 'currency': currency,
     if (deadline != null) 'deadline': deadline,
     if (donate != null) 'donate': donate,
-    if (fiat != null) 'fiat': fiat,
     if (fragment.isNotEmpty) 'fragment': fragment,
     if (host.isNotEmpty) 'host': host,
     if (hostname.isNotEmpty) 'hostname': hostname,
