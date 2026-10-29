@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- Added BTC precision regression tests through eight decimal places, including one satoshi and trailing-zero amounts such as `0.00012300`.
+- Verified amount strings retain trailing zeros through URI and JSON round trips, and numeric getters and setters preserve their value.
+- Covered lowercase/uppercase BTC currency codes and literal/percent-encoded amount separators using a generated test recipient.
+
 ## 0.2.0
 
 - Removed the `fiat` property and JSON field; the currency prefix in `amount` now defines the payment currency, including USD and EUR.
